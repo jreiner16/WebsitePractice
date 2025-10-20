@@ -4,18 +4,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rain</title>
+    <title>Playlist Generator</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <div class="container">
-        <div class="background-image"></div>
-        <canvas id="rainCanvas"></canvas>
-        <div class="time-display">
-            <div id="time"></div>
+        <!-- Header -->
+        <header class="header">
+            <h1>Playlist Generator</h1>
+            <div class="search-container">
+                <input type="text" id="promptInput" placeholder="Describe your mood, genre, or activity..." />
+                <button id="generateBtn">Generate Playlist</button>
+            </div>
+        </header>
+
+        <!-- Loading state -->
+        <div id="loading" class="loading hidden">
+            <div class="spinner"></div>
+            <p>Finding songs for you...</p>
         </div>
+
+        <!-- Playlist display -->
+        <main class="playlist-container">
+            <div class="playlist-header">
+                <h2 id="playlistTitle">No playlist generated</h2>
+                <button id="exportBtn" class="export-btn hidden" disabled>Export to Spotify</button>
+            </div>
+            <div id="playlist" class="playlist"></div>
+        </main>
     </div>
+
     <script src="script.js"></script>
 </body>
 

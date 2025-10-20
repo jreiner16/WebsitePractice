@@ -1,349 +1,188 @@
-// Windshield-style rain engine with surface droplets and lens/refraction
-class WindshieldRain {
+class PlaylistGenerator {
     constructor() {
-        this.canvas = document.getElementById('rainCanvas');
-        this.ctx = this.canvas.getContext('2d');
-        this.timeElement = document.getElementById('time');
+        this.playlist = [];
+        this.currentPrompt = '';
 
-        // Offscreen background buffer to match CSS cover sizing for refraction
-        this.bgCanvas = document.createElement('canvas');
-        this.bgCtx = this.bgCanvas.getContext('2d');
-        this.bgImage = null;
-        this.bgReady = false;
-
-        // Simulation state
-        this.droplets = [];
-        this.gridCellSize = 48;
-        this.maxDroplets = 1200;
-        this.spawnAccumulator = 0;
-
-        // Tilt (unit-ish vector); updated from device orientation if available
-        this.tiltX = 0.15; // slight rightwards slide
-        this.tiltY = 1.0;  // downward gravity along glass
-
-        // Wind (minor perturbation)
-        this.windX = 0;
+        this.promptInput = document.getElementById('promptInput');
+        this.generateBtn = document.getElementById('generateBtn');
+        this.loading = document.getElementById('loading');
+        this.playlistContainer = document.getElementById('playlist');
+        this.playlistTitle = document.getElementById('playlistTitle');
+        this.exportBtn = document.getElementById('exportBtn');
 
         this.init();
     }
 
     init() {
-        this.resizeCanvas();
-        this.loadBackgroundFromCss();
-        this.updateTime();
-        this.startTimeLoop();
-        this.startWindSimulation();
-        this.attachOrientation();
-        this.loop();
+        this.bindEvents();
+    }
 
-        window.addEventListener('resize', () => {
-            this.resizeCanvas();
-            this.redrawBackgroundBuffer();
+    bindEvents() {
+        this.generateBtn.addEventListener('click', () => this.generatePlaylist());
+        this.promptInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') this.generatePlaylist();
+        });
+        this.exportBtn.addEventListener('click', () => this.exportToSpotify());
+    }
+
+    async generatePlaylist() {
+        const prompt = this.promptInput.value.trim();
+        if (!prompt) return;
+
+        this.showLoading(true);
+        this.generateBtn.disabled = true;
+
+        try {
+            const songs = await this.findSongs(prompt);
+            this.playlist = songs;
+            this.currentPrompt = prompt;
+            this.renderPlaylist();
+            this.updateUI();
+        } catch (error) {
+            console.error('Error generating playlist:', error);
+            alert('Failed to generate playlist. Please try again.');
+        } finally {
+            this.showLoading(false);
+            this.generateBtn.disabled = false;
+        }
+    }
+
+    async findSongs(prompt) {
+        // Simulate API call delay
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        // Enhanced song database with more realistic data
+        const songDatabase = {
+            'happy': [
+                { title: 'Happy', artist: 'Pharrell Williams', image: 'https://via.placeholder.com/300x300/1db954/ffffff?text=Happy', spotifyId: 'spotify:track:60nZcImufyMA1MKQY3dcCH' },
+                { title: 'Good Vibrations', artist: 'The Beach Boys', image: 'https://via.placeholder.com/300x300/1db954/ffffff?text=Good+Vibes', spotifyId: 'spotify:track:5t9KYe0Fhd5cW6UYT4qP8f' },
+                { title: 'Walking on Sunshine', artist: 'Katrina and the Waves', image: 'https://via.placeholder.com/300x300/1db954/ffffff?text=Sunshine', spotifyId: 'spotify:track:05wIrZSwuaVWhcv5FfqeH0' },
+                { title: 'Don\'t Stop Me Now', artist: 'Queen', image: 'https://via.placeholder.com/300x300/1db954/ffffff?text=Don\'t+Stop', spotifyId: 'spotify:track:5T8EDUDqKcs6OSOwEsfqG7' },
+                { title: 'I Gotta Feeling', artist: 'The Black Eyed Peas', image: 'https://via.placeholder.com/300x300/1db954/ffffff?text=I+Gotta+Feeling', spotifyId: 'spotify:track:4kLLWz7srcuLKA7Et40PQR' }
+            ],
+            'sad': [
+                { title: 'Someone Like You', artist: 'Adele', image: 'https://via.placeholder.com/300x300/1db954/ffffff?text=Someone', spotifyId: 'spotify:track:1zwMYTA5nlNjZxYrvBB2pV' },
+                { title: 'Hurt', artist: 'Johnny Cash', image: 'https://via.placeholder.com/300x300/1db954/ffffff?text=Hurt', spotifyId: 'spotify:track:6gfjgHd7QZqJqJqJqJqJqJ' },
+                { title: 'Mad World', artist: 'Gary Jules', image: 'https://via.placeholder.com/300x300/1db954/ffffff?text=Mad+World', spotifyId: 'spotify:track:3JOVTQ5h8HGFnDdp4VT3MP' },
+                { title: 'The Sound of Silence', artist: 'Simon & Garfunkel', image: 'https://via.placeholder.com/300x300/1db954/ffffff?text=Sound+Silence', spotifyId: 'spotify:track:1Cj2vqUwlJVG27gJrun92y' },
+                { title: 'Everybody Hurts', artist: 'R.E.M.', image: 'https://via.placeholder.com/300x300/1db954/ffffff?text=Everybody+Hurts', spotifyId: 'spotify:track:4tCWWn3u7pf5D4g5N8B1kb' }
+            ],
+            'workout': [
+                { title: 'Eye of the Tiger', artist: 'Survivor', image: 'https://via.placeholder.com/300x300/1db954/ffffff?text=Eye+Tiger', spotifyId: 'spotify:track:2HHtWyy5CgaQbC7XSoOb0e' },
+                { title: 'Stronger', artist: 'Kanye West', image: 'https://via.placeholder.com/300x300/1db954/ffffff?text=Stronger', spotifyId: 'spotify:track:0j2T0R9dR9qdJYLB6SliCq' },
+                { title: 'Titanium', artist: 'David Guetta ft. Sia', image: 'https://via.placeholder.com/300x300/1db954/ffffff?text=Titanium', spotifyId: 'spotify:track:0lHAMNU8RGiIObScrsRgmP' },
+                { title: 'Lose Yourself', artist: 'Eminem', image: 'https://via.placeholder.com/300x300/1db954/ffffff?text=Lose+Yourself', spotifyId: 'spotify:track:5Z01UMMf7V1o0MzF86s6WJ' },
+                { title: 'Can\'t Hold Us', artist: 'Macklemore & Ryan Lewis', image: 'https://via.placeholder.com/300x300/1db954/ffffff?text=Can\'t+Hold+Us', spotifyId: 'spotify:track:3bidbhpOYeV4knko8J32nR' }
+            ],
+            'chill': [
+                { title: 'Weightless', artist: 'Marconi Union', image: 'https://via.placeholder.com/300x300/1db954/ffffff?text=Weightless', spotifyId: 'spotify:track:2q8Y2fP8ngj4FYvT0NgNQI' },
+                { title: 'Clair de Lune', artist: 'Claude Debussy', image: 'https://via.placeholder.com/300x300/1db954/ffffff?text=Clair+Lune', spotifyId: 'spotify:track:1IrdYjBJV9I3t5cna6sU57' },
+                { title: 'River Flows in You', artist: 'Yiruma', image: 'https://via.placeholder.com/300x300/1db954/ffffff?text=River+Flows', spotifyId: 'spotify:track:7yNK4VEIt1c4R2XZW4jz56' },
+                { title: 'Teardrop', artist: 'Massive Attack', image: 'https://via.placeholder.com/300x300/1db954/ffffff?text=Teardrop', spotifyId: 'spotify:track:67Hna13dNDkZvBpTXRIaOJ' },
+                { title: 'Breathe Me', artist: 'Sia', image: 'https://via.placeholder.com/300x300/1db954/ffffff?text=Breathe+Me', spotifyId: 'spotify:track:6M14XiCN6ScWl8X3y7mGcn' }
+            ],
+            'party': [
+                { title: 'Uptown Funk', artist: 'Mark Ronson ft. Bruno Mars', image: 'https://via.placeholder.com/300x300/1db954/ffffff?text=Uptown+Funk', spotifyId: 'spotify:track:32OlwWuMpZ6b0aN2RXCcqX' },
+                { title: 'Get Lucky', artist: 'Daft Punk ft. Pharrell Williams', image: 'https://via.placeholder.com/300x300/1db954/ffffff?text=Get+Lucky', spotifyId: 'spotify:track:69kOkLUCkxIZYexIgSG8rq' },
+                { title: 'Can\'t Stop the Feeling!', artist: 'Justin Timberlake', image: 'https://via.placeholder.com/300x300/1db954/ffffff?text=Can\'t+Stop', spotifyId: 'spotify:track:5WctNo4LThC3y9dUq1jB6F' },
+                { title: 'Shut Up and Dance', artist: 'Walk the Moon', image: 'https://via.placeholder.com/300x300/1db954/ffffff?text=Shut+Up+Dance', spotifyId: 'spotify:track:4kbj5MwxO1bq9wjT5g9UrA' },
+                { title: '24K Magic', artist: 'Bruno Mars', image: 'https://via.placeholder.com/300x300/1db954/ffffff?text=24K+Magic', spotifyId: 'spotify:track:6b8Be6iO4WrspXoGmWjQp7' }
+            ]
+        };
+
+        // Smart categorization
+        const lowerPrompt = prompt.toLowerCase();
+        let category = 'chill';
+
+        if (lowerPrompt.includes('happy') || lowerPrompt.includes('upbeat') || lowerPrompt.includes('joyful')) {
+            category = 'happy';
+        } else if (lowerPrompt.includes('sad') || lowerPrompt.includes('depressed') || lowerPrompt.includes('melancholy') || lowerPrompt.includes('emotional')) {
+            category = 'sad';
+        } else if (lowerPrompt.includes('workout') || lowerPrompt.includes('gym') || lowerPrompt.includes('exercise') || lowerPrompt.includes('pump') || lowerPrompt.includes('energy')) {
+            category = 'workout';
+        } else if (lowerPrompt.includes('party') || lowerPrompt.includes('dance') || lowerPrompt.includes('club') || lowerPrompt.includes('celebration')) {
+            category = 'party';
+        } else if (lowerPrompt.includes('chill') || lowerPrompt.includes('relax') || lowerPrompt.includes('calm') || lowerPrompt.includes('peaceful')) {
+            category = 'chill';
+        }
+
+        return songDatabase[category] || songDatabase['chill'];
+    }
+
+    renderPlaylist() {
+        this.playlistContainer.innerHTML = '';
+
+        this.playlist.forEach((song, index) => {
+            const songCard = document.createElement('div');
+            songCard.className = 'song-card';
+
+            songCard.innerHTML = `
+                <img src="${song.image}" alt="${song.title}" class="song-image" />
+                <div class="song-title">${song.title}</div>
+                <div class="song-artist">${song.artist}</div>
+            `;
+
+            this.playlistContainer.appendChild(songCard);
         });
     }
 
-    resizeCanvas() {
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
-        this.bgCanvas.width = this.canvas.width;
-        this.bgCanvas.height = this.canvas.height;
+    updateUI() {
+        if (this.playlist.length > 0) {
+            this.playlistTitle.textContent = `${this.currentPrompt} (${this.playlist.length} songs)`;
+            this.exportBtn.classList.remove('hidden');
+            this.exportBtn.disabled = false;
+        } else {
+            this.playlistTitle.textContent = 'No playlist generated';
+            this.exportBtn.classList.add('hidden');
+            this.exportBtn.disabled = true;
+        }
     }
 
-    loadBackgroundFromCss() {
-        const bgEl = document.querySelector('.background-image');
-        if (!bgEl) return;
-        const style = window.getComputedStyle(bgEl);
-        const bg = style.backgroundImage;
-        const match = bg && bg.match(/url\(["']?(.*?)["']?\)/);
-        if (!match || !match[1]) return;
+    exportToSpotify() {
+        if (this.playlist.length === 0) return;
 
-        const url = match[1];
-        const img = new Image();
-        // Attempt CORS-safe draw (Unsplash typically sets CORS headers)
-        img.crossOrigin = 'anonymous';
-        img.onload = () => {
-            this.bgImage = img;
-            this.bgReady = true;
-            this.redrawBackgroundBuffer();
+        // Create Spotify playlist URL with track IDs
+        const trackIds = this.playlist.map(song => song.spotifyId.split(':')[2]).join(',');
+        const playlistName = encodeURIComponent(this.currentPrompt);
+
+        // Open Spotify Web Player with tracks
+        const spotifyUrl = `https://open.spotify.com/search/${playlistName}`;
+
+        // Create a more user-friendly export
+        const exportData = {
+            playlistName: this.currentPrompt,
+            songs: this.playlist.map(song => ({
+                title: song.title,
+                artist: song.artist,
+                spotifyId: song.spotifyId
+            })),
+            exportDate: new Date().toISOString()
         };
-        img.onerror = () => {
-            // Fallback: not ready, but we can still render droplets without refraction
-            this.bgReady = false;
-        };
-        img.src = url;
-    }
 
-    redrawBackgroundBuffer() {
-        if (!this.bgReady || !this.bgImage) return;
-        const cw = this.bgCanvas.width;
-        const ch = this.bgCanvas.height;
-        const iw = this.bgImage.naturalWidth || this.bgImage.width;
-        const ih = this.bgImage.naturalHeight || this.bgImage.height;
+        // Copy to clipboard
+        const exportText = `Playlist: ${this.currentPrompt}\n\nSongs:\n${this.playlist.map((song, i) => `${i + 1}. ${song.title} - ${song.artist}`).join('\n')}\n\nSpotify Track IDs:\n${trackIds}`;
 
-        // Emulate CSS background-size: cover with center positioning
-        const scale = Math.max(cw / iw, ch / ih);
-        const dw = iw * scale;
-        const dh = ih * scale;
-        const dx = (cw - dw) / 2;
-        const dy = (ch - dh) / 2;
+        navigator.clipboard.writeText(exportText).then(() => {
+            alert(`Playlist copied to clipboard!\n\nYou can now:\n1. Open Spotify\n2. Create a new playlist\n3. Search for these songs\n4. Add them to your playlist\n\nOr visit: ${spotifyUrl}`);
+        }).catch(() => {
+            // Fallback if clipboard API fails
+            const textArea = document.createElement('textarea');
+            textArea.value = exportText;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
 
-        this.bgCtx.clearRect(0, 0, cw, ch);
-        this.bgCtx.drawImage(this.bgImage, dx, dy, dw, dh);
-    }
-
-    startTimeLoop() {
-        setInterval(() => {
-            this.updateTime();
-        }, 1000);
-    }
-
-    updateTime() {
-        if (!this.timeElement) return;
-        const now = new Date();
-        const timeString = now.toLocaleTimeString('en-US', {
-            hour12: false,
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
+            alert(`Playlist copied to clipboard!\n\nYou can now:\n1. Open Spotify\n2. Create a new playlist\n3. Search for these songs\n4. Add them to your playlist\n\nOr visit: ${spotifyUrl}`);
         });
-        this.timeElement.textContent = timeString;
     }
 
-    attachOrientation() {
-        if (window.DeviceOrientationEvent) {
-            window.addEventListener('deviceorientation', (e) => {
-                const gamma = (e.gamma || 0); // left-right tilt
-                const beta = (e.beta || 0);   // front-back tilt
-                // Map tilt to a vector; keep normalized-ish and smooth
-                const targetX = Math.max(-1, Math.min(1, gamma / 45));
-                const targetY = Math.max(0.2, Math.min(1.4, 0.8 + (beta / 90) * 0.6));
-                // Light smoothing
-                this.tiltX = this.tiltX * 0.9 + targetX * 0.1;
-                this.tiltY = this.tiltY * 0.9 + targetY * 0.1;
-            });
-        }
-    }
-
-    startWindSimulation() {
-        setInterval(() => {
-            this.windX += (Math.random() - 0.5) * 0.05;
-            this.windX = Math.max(-0.25, Math.min(0.25, this.windX));
-        }, 700);
-    }
-
-    spawnDroplets(dt) {
-        // Dense spawn concentrated near top; accumulate fractional spawns for stability
-        const width = this.canvas.width;
-        const baseRatePerPx = 0.0018; // tune density
-        this.spawnAccumulator += width * baseRatePerPx * (dt * 60); // normalize to ~60fps
-
-        while (this.spawnAccumulator >= 1 && this.droplets.length < this.maxDroplets) {
-            this.spawnAccumulator -= 1;
-            const r = Math.random() * 2.2 + 1.1; // radius 1.1 - 3.3
-            const x = Math.random() * width;
-            const y = Math.random() * (this.canvas.height * 0.25); // top quarter
-            this.droplets.push({
-                x, y, r,
-                vx: (Math.random() - 0.5) * 0.05,
-                vy: 0,
-                alive: true
-            });
-        }
-    }
-
-    rebuildSpatialGrid() {
-        this.grid = new Map();
-        const cell = this.gridCellSize;
-        for (let i = 0; i < this.droplets.length; i++) {
-            const d = this.droplets[i];
-            if (!d.alive) continue;
-            const cx = Math.floor(d.x / cell);
-            const cy = Math.floor(d.y / cell);
-            for (let oy = -1; oy <= 1; oy++) {
-                for (let ox = -1; ox <= 1; ox++) {
-                    const key = `${cx + ox},${cy + oy}`;
-                    if (!this.grid.has(key)) this.grid.set(key, []);
-                    this.grid.get(key).push(i);
-                }
-            }
-        }
-    }
-
-    mergeDroplets() {
-        const toRemove = new Set();
-        const cell = this.gridCellSize;
-
-        for (let i = 0; i < this.droplets.length; i++) {
-            const a = this.droplets[i];
-            if (!a.alive || toRemove.has(i)) continue;
-
-            const cx = Math.floor(a.x / cell);
-            const cy = Math.floor(a.y / cell);
-
-            for (let oy = -1; oy <= 1; oy++) {
-                for (let ox = -1; ox <= 1; ox++) {
-                    const key = `${cx + ox},${cy + oy}`;
-                    const indices = this.grid.get(key);
-                    if (!indices) continue;
-                    for (const j of indices) {
-                        if (j === i || toRemove.has(j)) continue;
-                        const b = this.droplets[j];
-                        if (!b.alive) continue;
-                        const dx = b.x - a.x;
-                        const dy = b.y - a.y;
-                        const dist = Math.hypot(dx, dy);
-                        const overlap = a.r + b.r - dist;
-                        if (overlap > Math.min(a.r, b.r) * 0.45) {
-                            // Merge b into a (area conservation)
-                            const areaA = a.r * a.r;
-                            const areaB = b.r * b.r;
-                            const totalArea = areaA + areaB;
-                            a.x = (a.x * areaA + b.x * areaB) / totalArea;
-                            a.y = (a.y * areaA + b.y * areaB) / totalArea;
-                            a.vx = (a.vx * areaA + b.vx * areaB) / totalArea;
-                            a.vy = (a.vy * areaA + b.vy * areaB) / totalArea;
-                            a.r = Math.sqrt(totalArea);
-                            b.alive = false;
-                            toRemove.add(j);
-                        }
-                    }
-                }
-            }
-        }
-
-        if (toRemove.size > 0) {
-            this.droplets = this.droplets.filter((d, idx) => d.alive && !toRemove.has(idx));
-        }
-    }
-
-    updatePhysics(dt) {
-        const width = this.canvas.width;
-        const height = this.canvas.height;
-
-        const baseGX = this.tiltX * 0.06; // lateral component
-        const baseGY = this.tiltY * 0.12; // primary down-glass gravity
-
-        for (let i = 0; i < this.droplets.length; i++) {
-            const d = this.droplets[i];
-            if (!d.alive) continue;
-
-            // Stickiness (static friction) stronger for small droplets
-            const adhesion = 0.065 / Math.max(1.0, d.r);
-            const trialVx = d.vx + baseGX + this.windX * 0.02;
-            const trialVy = d.vy + baseGY;
-            const trialSpeed = Math.hypot(trialVx, trialVy);
-
-            if (trialSpeed < adhesion) {
-                // Not enough force to overcome adhesion; slowly relax
-                d.vx *= 0.9;
-                d.vy *= 0.9;
-            } else {
-                // Slide with damping; larger drops slide more easily
-                const damping = 0.985 - Math.min(0.02, d.r * 0.0015);
-                d.vx = d.vx * damping + baseGX + this.windX * 0.02;
-                d.vy = d.vy * damping + baseGY;
-            }
-
-            // Minor surface micro-jitter to avoid perfect uniformity
-            d.vx += (Math.random() - 0.5) * 0.005;
-            d.vy += (Math.random() - 0.5) * 0.003;
-
-            // Integrate
-            d.x += d.vx * (dt * 60);
-            d.y += d.vy * (dt * 60);
-
-            // Bounds: keep on screen; if too large and goes off, recycle
-            if (d.x < -d.r || d.x > width + d.r || d.y > height + d.r) {
-                d.alive = false;
-            } else {
-                // Prevent partial clipping at top
-                if (d.y < d.r) d.y = d.r;
-            }
-        }
-
-        // Remove dead droplets
-        if (this.droplets.length > this.maxDroplets) {
-            this.droplets.splice(0, this.droplets.length - this.maxDroplets);
-        }
-        this.droplets = this.droplets.filter(d => d.alive);
-    }
-
-    drawDropletLens(d) {
-        if (!this.bgReady) {
-            // Fallback: simple glossy circle
-            this.ctx.beginPath();
-            this.ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
-            this.ctx.fillStyle = 'rgba(255,255,255,0.08)';
-            this.ctx.fill();
-            return;
-        }
-
-        const mag = 1.05 + Math.min(0.08, d.r * 0.01); // magnification factor
-        const shiftX = d.vx * 6; // refractive offset along motion
-        const shiftY = d.vy * 6;
-
-        this.ctx.save();
-        this.ctx.beginPath();
-        this.ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
-        this.ctx.clip();
-
-        // Lens transform: scale around droplet center and offset slightly
-        this.ctx.translate(d.x + shiftX, d.y + shiftY);
-        this.ctx.scale(mag, mag);
-        this.ctx.translate(-d.x, -d.y);
-
-        // Draw the background buffer into the clipped region
-        this.ctx.drawImage(this.bgCanvas, 0, 0);
-
-        this.ctx.restore();
-
-        // Edge and highlight for realism
-        // Soft edge darkening
-        const edgeGrad = this.ctx.createRadialGradient(d.x, d.y, d.r * 0.6, d.x, d.y, d.r);
-        edgeGrad.addColorStop(0, 'rgba(0,0,0,0)');
-        edgeGrad.addColorStop(1, 'rgba(0,0,0,0.15)');
-        this.ctx.fillStyle = edgeGrad;
-        this.ctx.beginPath();
-        this.ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
-        this.ctx.fill();
-
-        // Specular highlight
-        this.ctx.beginPath();
-        this.ctx.ellipse(d.x - d.r * 0.35, d.y - d.r * 0.35, d.r * 0.25, d.r * 0.18, -0.6, 0, Math.PI * 2);
-        this.ctx.fillStyle = 'rgba(255,255,255,0.25)';
-        this.ctx.fill();
-    }
-
-    render() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-        // Draw droplets (sorted by radius for nicer layering)
-        const list = this.droplets.slice().sort((a, b) => a.r - b.r);
-        for (let i = 0; i < list.length; i++) {
-            this.drawDropletLens(list[i]);
-        }
-    }
-
-    loop() {
-        let last = performance.now();
-        const frame = (now) => {
-            const dt = Math.min(0.05, (now - last) / 1000); // clamp dt
-            last = now;
-
-            // Spawn, simulate, merge, and render
-            this.spawnDroplets(dt);
-            this.updatePhysics(dt);
-            this.rebuildSpatialGrid();
-            this.mergeDroplets();
-            this.render();
-
-            requestAnimationFrame(frame);
-        };
-        requestAnimationFrame(frame);
+    showLoading(show) {
+        this.loading.classList.toggle('hidden', !show);
     }
 }
 
-// Initialize on load
-window.addEventListener('DOMContentLoaded', () => {
-    new WindshieldRain();
+// Initialize the playlist generator when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+    new PlaylistGenerator();
 });

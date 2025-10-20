@@ -4,17 +4,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Pong</title>
+    <title>Jungle Pong</title>
     <style>
         :root {
-            --bg: #0b1020;
-            --panel: #0f1530;
+            --bg: #0b2014;
+            /* deep jungle green */
+            --panel: #0d1a12;
             --ink: #e8ecf6;
-            --muted: #9aa3b2;
-            --line: #273047;
-            --accent: #6de3b2;
+            --muted: #b8c3b6;
+            --line: #1c3427;
+            --accent: #81e6a8;
+            /* mint accent */
             --ball: #ffffff;
-            --paddle: #f6f7fb;
+            --paddle-bark: #6d4b2d;
+            /* brown paddle */
+            --paddle-stripe: #2fb36b;
+            /* green stripe */
         }
 
         * {
@@ -28,7 +33,7 @@
 
         body {
             margin: 0;
-            background: radial-gradient(1200px 700px at 50% -10%, #162142 0%, var(--bg) 60%);
+            background: radial-gradient(1200px 700px at 50% -10%, #12301f 0%, var(--bg) 60%);
             color: var(--ink);
             font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Apple Color Emoji", "Segoe UI Emoji";
             display: grid;
@@ -41,12 +46,7 @@
         }
 
         .controls {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 12px;
+            display: none;
         }
 
         button {
@@ -78,8 +78,8 @@
             position: relative;
             border-radius: 14px;
             padding: 10px;
-            background: linear-gradient(180deg, #11172f, #0b1127);
-            border: 1px solid #1d2544;
+            background: linear-gradient(180deg, #0c2418, #07150e);
+            border: 1px solid #173021;
             box-shadow: 0 10px 30px rgba(0, 0, 0, .35);
         }
 
@@ -88,33 +88,113 @@
             width: min(95vw, 940px);
             aspect-ratio: 16 / 10;
             /* 800 x 500 */
-            background: #0b0f1f;
-            /* cleared in JS anyway */
+            background: #07130d;
+            /* jungle canvas base; cleared in JS anyway */
             border-radius: 10px;
         }
 
-        .help {
-            text-align: center;
-            margin-top: 10px;
-            color: var(--muted);
-            font-size: 14px;
+        /* Top HUD overlay */
+        .hud {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            right: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.28);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: 700;
+            color: #eaf6ef;
+            text-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
             user-select: none;
+            pointer-events: none;
+            /* pass-through */
+        }
+
+        .hud .title {
+            opacity: 0.96;
+        }
+
+        .hud .meta {
+            opacity: 0.9;
+            font-weight: 700;
+        }
+
+        .hud .score {
+            min-width: 84px;
+            text-align: right;
+            font-weight: 700;
+        }
+
+        /* Center help/instructions overlay */
+        .modal-overlay {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            place-items: center;
+            background: rgba(0, 0, 0, 0.25);
+        }
+
+        .modal-overlay.hidden {
+            display: none;
+        }
+
+        .overlay-card {
+            max-width: 560px;
+            width: min(90%, 560px);
+            padding: 18px 20px;
+            border-radius: 12px;
+            background: rgba(8, 20, 14, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .35);
+            color: #eaf6ef;
+            text-align: center;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .overlay-card h2 {
+            margin: 6px 0 8px;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .overlay-card p {
+            margin: 8px 0;
+            font-size: 14px;
+            line-height: 1.45;
+            color: #d7efe2;
+        }
+
+        .help {
+            display: none;
         }
     </style>
 </head>
 
 <body>
     <main class="container">
-        <div class="controls">
-            <button id="modeButton" type="button" aria-pressed="false">Mode: 1 Player</button>
-            <button id="startButton" type="button">Start</button>
-            <button id="pauseButton" type="button" disabled>Pause</button>
-            <button id="restartButton" type="button">Restart</button>
-        </div>
         <div class="game-shell">
             <canvas id="gameCanvas" width="800" height="500" aria-label="Pong game canvas" role="img"></canvas>
+            <div id="hud" class="hud" aria-hidden="true">
+                <div class="title">Jungle Pong</div>
+                <div class="meta">• Space: Start/Pause • M: Mute • 1: 1P/2P • H: Help</div>
+                <div id="scoreHUD" class="score">0 0</div>
+            </div>
+            <div id="overlay" class="modal-overlay">
+                <div class="overlay-card" role="dialog" aria-modal="true" aria-label="Jungle Pong Help">
+                    <h2>Jungle Pong</h2>
+                    <p><strong>Click</strong> to start. Move your <strong>mouse</strong> to control the left paddle.</p>
+                    <p>Press <strong>Space</strong> to Pause/Resume • <strong>M</strong> to Mute • <strong>1</strong> to
+                        toggle 1P/2P • <strong>H</strong> for Help</p>
+                    <p>First to 7 points wins. Good luck!</p>
+                </div>
+            </div>
         </div>
-        <div class="help">W/S or ↑/↓ to move • Space to pause • R to restart • M toggles 1P/2P</div>
     </main>
 
     <script>
@@ -140,6 +220,9 @@
 
             const canvas = document.getElementById("gameCanvas");
             const ctx = canvas.getContext("2d");
+            const hud = document.getElementById("hud");
+            const scoreHUD = document.getElementById("scoreHUD");
+            const overlay = document.getElementById("overlay");
 
             // HiDPI crisp rendering
             let devicePixelRatioScale = 1;
@@ -161,6 +244,7 @@
                 leftDown: false,
                 rightUp: false,
                 rightDown: false,
+                mouseY: (BASE_HEIGHT - PADDLE_HEIGHT) / 2
             };
 
             const paddles = {
@@ -199,11 +283,32 @@
                 serveDirection: Math.random() < 0.5 ? -1 : 1, // -1 = to left, 1 = to right
             };
 
-            // UI elements
-            const startButton = document.getElementById("startButton");
-            const pauseButton = document.getElementById("pauseButton");
-            const restartButton = document.getElementById("restartButton");
-            const modeButton = document.getElementById("modeButton");
+            // Sound
+            const sound = {
+                muted: false,
+                ctx: null,
+                ensure() {
+                    if (!this.ctx) {
+                        const AC = window.AudioContext || window.webkitAudioContext;
+                        this.ctx = AC ? new AC() : null;
+                    }
+                },
+                beep(freq = 440, duration = 0.05, type = "sine", gain = 0.03) {
+                    if (this.muted) return;
+                    this.ensure();
+                    if (!this.ctx) return;
+                    const t = this.ctx.currentTime;
+                    const osc = this.ctx.createOscillator();
+                    const g = this.ctx.createGain();
+                    osc.type = type;
+                    osc.frequency.value = freq;
+                    g.gain.setValueAtTime(gain, t);
+                    g.gain.exponentialRampToValueAtTime(0.0001, t + duration);
+                    osc.connect(g).connect(this.ctx.destination);
+                    osc.start(t);
+                    osc.stop(t + duration + 0.02);
+                }
+            };
 
             function clamp(value, min, max) {
                 return Math.max(min, Math.min(max, value));
@@ -227,32 +332,21 @@
                 game.state = "serving";
                 game.waitUntilMs = performance.now() + SERVE_DELAY_MS;
                 resetPositions();
-                startButton.disabled = true;
-                pauseButton.disabled = false;
+                overlay.classList.add("hidden");
+                hud.setAttribute("aria-hidden", "false");
             }
 
-            function restartGame() {
-                startGame();
-            }
+            function restartGame() { startGame(); }
 
             function togglePause() {
                 if (game.state === "idle" || game.state === "gameover") return;
-                if (game.state === "paused") {
-                    game.state = "playing";
-                    pauseButton.textContent = "Pause";
-                    return;
-                }
-                if (game.state === "playing" || game.state === "serving") {
-                    game.state = "paused";
-                    pauseButton.textContent = "Resume";
-                }
+                if (game.state === "paused") { game.state = "playing"; overlay.classList.add("hidden"); return; }
+                if (game.state === "playing" || game.state === "serving") { game.state = "paused"; overlay.classList.remove("hidden"); }
             }
 
             function toggleMode() {
                 if (game.state === "playing") return; // don't allow mid-rally switches
                 game.mode = game.mode === "single" ? "double" : "single";
-                modeButton.textContent = `Mode: ${game.mode === "single" ? "1 Player" : "2 Players"}`;
-                modeButton.setAttribute("aria-pressed", String(game.mode === "double"));
             }
 
             function serveBall(direction) {
@@ -266,7 +360,8 @@
                 ball.vx = Math.cos(angle) * ball.speed * direction;
                 ball.vy = Math.sin(angle) * ball.speed;
                 game.state = "playing";
-                pauseButton.textContent = "Pause";
+                overlay.classList.add("hidden");
+                sound.beep(360, 0.06, "triangle", 0.03);
             }
 
             function scheduleServe(nextDirection) {
@@ -282,12 +377,13 @@
                 const someoneWon = game.leftScore >= WINNING_SCORE || game.rightScore >= WINNING_SCORE;
                 if (someoneWon) {
                     game.state = "gameover";
-                    startButton.disabled = false;
-                    pauseButton.disabled = true;
+                    overlay.classList.remove("hidden");
+                    sound.beep(180, 0.18, "sawtooth", 0.05);
                     return;
                 }
                 const nextDirection = side === "left" ? -1 : 1; // serve towards the player who conceded
                 scheduleServe(nextDirection);
+                sound.beep(240, 0.1, "square", 0.04);
             }
 
             function updatePaddleFromInput(paddle, upPressed, downPressed, dtSeconds) {
@@ -298,6 +394,11 @@
                     paddle.y += dy * PADDLE_SPEED_PX_PER_S * dtSeconds;
                 }
                 paddle.y = clamp(paddle.y, 0, BASE_HEIGHT - paddle.height);
+            }
+
+            function updatePaddleFromMouse() {
+                const target = clamp(inputState.mouseY - paddles.left.height * 0.5, 0, BASE_HEIGHT - paddles.left.height);
+                paddles.left.y = target;
             }
 
             function updateCpuPaddle(dtSeconds) {
@@ -361,6 +462,7 @@
                 const direction = isLeftPaddle ? 1 : -1;
                 ball.vx = Math.cos(bounceAngle) * ball.speed * direction;
                 ball.vy = Math.sin(bounceAngle) * ball.speed;
+                sound.beep(520, 0.04, "square", 0.035);
                 return true;
             }
 
@@ -375,7 +477,8 @@
                 }
 
                 // Paddles
-                updatePaddleFromInput(paddles.left, inputState.leftUp, inputState.leftDown, dtSeconds);
+                // Left paddle: mouse-controlled
+                updatePaddleFromMouse();
                 if (game.mode === "double") {
                     updatePaddleFromInput(paddles.right, inputState.rightUp, inputState.rightDown, dtSeconds);
                 } else {
@@ -405,7 +508,7 @@
             }
 
             function drawNet() {
-                ctx.fillStyle = "#243050";
+                ctx.fillStyle = "#163624";
                 const dashHeight = 14;
                 const gap = 12;
                 const x = (BASE_WIDTH - 4) / 2;
@@ -414,21 +517,27 @@
                 }
             }
 
-            function drawScores() {
-                ctx.fillStyle = "#cfd6ea";
-                ctx.font = "bold 48px ui-sans-serif, system-ui, -apple-system, Segoe UI";
-                ctx.textAlign = "center";
-                ctx.textBaseline = "top";
-                ctx.fillText(String(game.leftScore), BASE_WIDTH * 0.5 - 80, 18);
-                ctx.fillText(String(game.rightScore), BASE_WIDTH * 0.5 + 80, 18);
-                ctx.font = "bold 14px ui-sans-serif, system-ui, -apple-system";
-                ctx.fillStyle = "#8592b3";
-                ctx.fillText(game.mode === "single" ? "1P vs CPU" : "2P", BASE_WIDTH * 0.5, 74);
+            function updateHud() {
+                if (scoreHUD) scoreHUD.textContent = `${game.leftScore} ${game.rightScore}`;
             }
 
             function drawPaddle(p) {
-                ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--paddle").trim() || "#ffffff";
+                // Bark base
+                ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--paddle-bark").trim() || "#6d4b2d";
                 ctx.fillRect(p.x, p.y, p.width, p.height);
+                // Green diagonal stripes
+                const stripeColor = getComputedStyle(document.documentElement).getPropertyValue("--paddle-stripe").trim() || "#2fb36b";
+                ctx.fillStyle = stripeColor;
+                const stripeWidth = 3;
+                const spacing = 8;
+                ctx.save();
+                ctx.beginPath();
+                ctx.rect(p.x, p.y, p.width, p.height);
+                ctx.clip();
+                for (let i = -p.height; i < p.height + p.width; i += spacing) {
+                    ctx.fillRect(p.x - p.height + i, p.y + i, stripeWidth, p.height);
+                }
+                ctx.restore();
             }
 
             function drawBall() {
@@ -436,69 +545,129 @@
                 ctx.fillRect(ball.x, ball.y, ball.size, ball.size);
             }
 
-            function drawOverlay(text, subText) {
-                ctx.save();
-                ctx.fillStyle = "rgba(4,8,20,.66)";
-                ctx.fillRect(0, 0, BASE_WIDTH, BASE_HEIGHT);
-                ctx.fillStyle = "#e8ecf6";
-                ctx.textAlign = "center";
-                ctx.textBaseline = "middle";
-                ctx.font = "bold 36px ui-sans-serif, system-ui, -apple-system";
-                ctx.fillText(text, BASE_WIDTH / 2, BASE_HEIGHT / 2 - 10);
-                if (subText) {
-                    ctx.fillStyle = "#a9b2c9";
-                    ctx.font = "16px ui-sans-serif, system-ui, -apple-system";
-                    ctx.fillText(subText, BASE_WIDTH / 2, BASE_HEIGHT / 2 + 28);
+            // Jungle background with floating leaves
+            const leaves = [];
+            function makeLeaf() {
+                const types = [0, 1, 2];
+                const type = types[Math.floor(Math.random() * types.length)];
+                const scale = Math.random() * 0.6 + 0.6; // 0.6 - 1.2
+                return {
+                    x: Math.random() * BASE_WIDTH,
+                    y: Math.random() * BASE_HEIGHT,
+                    vy: Math.random() * 16 + 10, // fall speed
+                    driftAmp: Math.random() * 20 + 10,
+                    driftFreq: Math.random() * 0.8 + 0.6,
+                    phase: Math.random() * Math.PI * 2,
+                    rot: Math.random() * Math.PI * 2,
+                    spin: (Math.random() - 0.5) * 0.6,
+                    type,
+                    scale,
+                    color: Math.random() < 0.5 ? "#2ba164" : "#1f8b4f"
+                };
+            }
+
+            function initLeaves(count = 36) {
+                leaves.length = 0;
+                for (let i = 0; i < count; i++) leaves.push(makeLeaf());
+            }
+
+            function updateLeaves(dt) {
+                for (const lf of leaves) {
+                    lf.y += lf.vy * dt;
+                    lf.x += Math.sin(lf.y * 0.02 * lf.driftFreq + lf.phase) * 8 * dt * 60;
+                    lf.rot += lf.spin * dt;
+                    if (lf.y > BASE_HEIGHT + 20) {
+                        lf.y = -20;
+                        lf.x = Math.random() * BASE_WIDTH;
+                        lf.vy = Math.random() * 16 + 10;
+                        lf.phase = Math.random() * Math.PI * 2;
+                    }
                 }
-                ctx.restore();
+            }
+
+            function drawLeafShape(type) {
+                switch (type) {
+                    case 0: {
+                        // ellipse
+                        ctx.beginPath();
+                        ctx.ellipse(0, 0, 9, 16, 0, 0, Math.PI * 2);
+                        ctx.fill();
+                        break;
+                    }
+                    case 1: {
+                        // teardrop/bezier leaf
+                        ctx.beginPath();
+                        ctx.moveTo(0, -18);
+                        ctx.bezierCurveTo(10, -10, 10, 10, 0, 18);
+                        ctx.bezierCurveTo(-10, 10, -10, -10, 0, -18);
+                        ctx.fill();
+                        break;
+                    }
+                    case 2: {
+                        // long thin leaf
+                        ctx.beginPath();
+                        ctx.moveTo(0, -20);
+                        ctx.quadraticCurveTo(8, -6, 6, 0);
+                        ctx.quadraticCurveTo(4, 10, 0, 20);
+                        ctx.quadraticCurveTo(-4, 10, -6, 0);
+                        ctx.quadraticCurveTo(-8, -6, 0, -20);
+                        ctx.fill();
+                        break;
+                    }
+                }
+            }
+
+            function drawLeaves() {
+                for (const lf of leaves) {
+                    ctx.save();
+                    ctx.translate(lf.x, lf.y);
+                    ctx.rotate(lf.rot);
+                    ctx.scale(lf.scale, lf.scale);
+                    ctx.fillStyle = lf.color;
+                    drawLeafShape(lf.type);
+                    ctx.restore();
+                }
             }
 
             function drawBackground() {
                 const gradient = ctx.createLinearGradient(0, 0, 0, BASE_HEIGHT);
-                gradient.addColorStop(0, "#0b0f1f");
-                gradient.addColorStop(1, "#0a0d1a");
+                gradient.addColorStop(0, "#0b2418");
+                gradient.addColorStop(1, "#08170f");
                 ctx.fillStyle = gradient;
                 ctx.fillRect(0, 0, BASE_WIDTH, BASE_HEIGHT);
+                drawLeaves();
             }
 
             function draw() {
                 drawBackground();
                 drawNet();
-                drawScores();
                 drawPaddle(paddles.left);
                 drawPaddle(paddles.right);
                 drawBall();
-
-                if (game.state === "idle") {
-                    drawOverlay("Pong", "Press Enter or Start to play");
-                } else if (game.state === "paused") {
-                    drawOverlay("Paused", "Press Space or Resume to continue");
-                } else if (game.state === "serving") {
-                    drawOverlay("Get Ready", "Serving in a moment...");
-                } else if (game.state === "gameover") {
-                    const winner = game.leftScore > game.rightScore ? "Left Player" : (game.mode === "single" ? "CPU" : "Right Player");
-                    drawOverlay(`${winner} Wins!`, "Press Start or R to play again");
-                }
+                // HUD DOM handles instructions/overlay; canvas stays clean
             }
 
             function frame(nowMs) {
                 const dtSeconds = Math.min(0.033, (nowMs - game.lastTimeMs) / 1000);
                 game.lastTimeMs = nowMs;
+                updateLeaves(dtSeconds);
                 update(dtSeconds);
                 draw();
+                updateHud();
                 requestAnimationFrame(frame);
             }
 
             // Input handling
             function handleKey(e, isDown) {
                 switch (e.code) {
-                    case "KeyW": inputState.leftUp = isDown; break;
-                    case "KeyS": inputState.leftDown = isDown; break;
+                    // Left paddle is mouse-controlled
                     case "ArrowUp": inputState.rightUp = isDown; break;
                     case "ArrowDown": inputState.rightDown = isDown; break;
-                    case "Space": if (isDown) { e.preventDefault(); togglePause(); } break;
+                    case "Space": if (isDown) { e.preventDefault(); if (game.state === "idle") { startGame(); } else { togglePause(); } } break;
                     case "KeyR": if (isDown) { restartGame(); } break;
-                    case "KeyM": if (isDown) { toggleMode(); } break;
+                    case "KeyM": if (isDown) { sound.muted = !sound.muted; } break;
+                    case "Digit1": if (isDown) { toggleMode(); } break;
+                    case "KeyH": if (isDown) { if (overlay.classList.contains("hidden")) { overlay.classList.remove("hidden"); game.state === "playing" && (game.state = "paused"); } else { overlay.classList.add("hidden"); } } break;
                     case "Enter": if (isDown) {
                         if (game.state === "idle" || game.state === "gameover") {
                             startGame();
@@ -512,20 +681,28 @@
             document.addEventListener("keydown", (e) => handleKey(e, true));
             document.addEventListener("keyup", (e) => handleKey(e, false));
 
-            // Mouse/touch to serve when waiting
+            // Mouse control + click to start
+            canvas.addEventListener("mousemove", (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const y = (e.clientY - rect.top) * (BASE_HEIGHT / rect.height);
+                inputState.mouseY = y;
+            });
+
             canvas.addEventListener("click", () => {
                 if (game.state === "idle" || game.state === "gameover") {
                     startGame();
                 } else if (game.state === "serving") {
                     serveBall(game.serveDirection);
+                } else if (game.state === "paused") {
+                    togglePause();
                 }
             });
 
-            // Buttons
-            startButton.addEventListener("click", startGame);
-            restartButton.addEventListener("click", restartGame);
-            pauseButton.addEventListener("click", togglePause);
-            modeButton.addEventListener("click", toggleMode);
+            // Also allow clicking the overlay to start/close
+            overlay.addEventListener("click", () => {
+                if (game.state === "idle" || game.state === "gameover") startGame();
+                else if (game.state === "paused") togglePause();
+            });
 
             // Prevent page scroll on arrow keys when focused on body
             window.addEventListener("keydown", (e) => {
@@ -535,11 +712,8 @@
             }, { passive: false });
 
             // Start loop
+            initLeaves();
             requestAnimationFrame((t) => { game.lastTimeMs = t; requestAnimationFrame(frame); });
-
-            // Initial UI state
-            modeButton.textContent = `Mode: ${game.mode === "single" ? "1 Player" : "2 Players"}`;
-            pauseButton.textContent = "Pause";
         })();
     </script>
 </body>
