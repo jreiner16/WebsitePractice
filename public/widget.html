@@ -1,0 +1,766 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Music Theory Visualizer</title>
+    <meta name="theme-color" content="#1a1a1a" />
+    <style>
+        :root {
+            --bg: #1a1a1a;
+            --panel: #2a2a2a;
+            --panel-border: #3a3a3a;
+            --text: #ffffff;
+            --muted: #888888;
+            --accent: #4a9eff;
+            --good: #4ade80;
+            --warn: #fbbf24;
+            --bad: #f87171;
+            --primary: #667eea;
+            --secondary: #764ba2;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--text);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        .container {
+            position: fixed;
+            inset: 0;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 0;
+        }
+
+        .sidebar {
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .main-content {
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: var(--muted);
+            margin-bottom: 16px;
+        }
+
+        .control-group {
+            margin-bottom: 16px;
+        }
+
+        .control-label {
+            display: block;
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        select,
+        input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        select:focus,
+        input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(74, 158, 255, 0.2);
+        }
+
+        button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 8px 16px;
+            color: var(--text);
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: var(--accent);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        button.primary {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        button.primary:hover {
+            background: #3a8ce6;
+        }
+
+        .circle-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 400px;
+        }
+
+        .circle-of-fifths {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .note-button {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .note-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .note-button.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(74, 158, 255, 0.5);
+        }
+
+        .chord-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .chord-note {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 8px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .chord-note.root {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .scale-display {
+            display: flex;
+            gap: 4px;
+            margin-top: 16px;
+        }
+
+        .scale-note {
+            flex: 1;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .scale-note.root {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .keyboard {
+            display: flex;
+            gap: 2px;
+            margin-top: 16px;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+
+        .key {
+            flex: 1;
+            height: 60px;
+            border-radius: 4px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .key.white {
+            background: #ffffff;
+            color: #000000;
+            border: 1px solid #cccccc;
+        }
+
+        .key.black {
+            background: #333333;
+            color: #ffffff;
+            margin-left: -8px;
+            margin-right: -8px;
+            z-index: 1;
+            height: 40px;
+        }
+
+        .key:hover {
+            transform: translateY(-2px);
+        }
+
+        .key.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        .audio-controls {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            margin: 8px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent);
+            width: 0%;
+            transition: width 0.1s ease;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr;
+            }
+
+            .sidebar {
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="card">
+                <div class="title">Key Selection</div>
+                <div class="control-group">
+                    <label class="control-label">Root Note</label>
+                    <select id="rootNote">
+                        <option value="C">C</option>
+                        <option value="C#">C#</option>
+                        <option value="D">D</option>
+                        <option value="D#">D#</option>
+                        <option value="E">E</option>
+                        <option value="F">F</option>
+                        <option value="F#">F#</option>
+                        <option value="G">G</option>
+                        <option value="G#">G#</option>
+                        <option value="A">A</option>
+                        <option value="A#">A#</option>
+                        <option value="B">B</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Scale Type</label>
+                    <select id="scaleType">
+                        <option value="major">Major</option>
+                        <option value="minor">Minor (Natural)</option>
+                        <option value="harmonic">Minor (Harmonic)</option>
+                        <option value="melodic">Minor (Melodic)</option>
+                        <option value="pentatonic">Pentatonic Major</option>
+                        <option value="blues">Blues</option>
+                        <option value="dorian">Dorian</option>
+                        <option value="mixolydian">Mixolydian</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="title">Chord Analysis</div>
+                <div class="control-group">
+                    <label class="control-label">Chord Type</label>
+                    <select id="chordType">
+                        <option value="major">Major</option>
+                        <option value="minor">Minor</option>
+                        <option value="diminished">Diminished</option>
+                        <option value="augmented">Augmented</option>
+                        <option value="sus2">Sus2</option>
+                        <option value="sus4">Sus4</option>
+                        <option value="major7">Major 7th</option>
+                        <option value="minor7">Minor 7th</option>
+                        <option value="dom7">Dominant 7th</option>
+                    </select>
+                </div>
+                <div class="chord-display" id="chordDisplay">
+                    <div class="chord-note root">C</div>
+                    <div class="chord-note">E</div>
+                    <div class="chord-note">G</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="title">Audio Controls</div>
+                <div class="audio-controls">
+                    <button id="playScale" class="primary">Play Scale</button>
+                    <button id="playChord">Play Chord</button>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="audio-controls">
+                    <button id="stopAudio">Stop</button>
+                    <input type="range" id="volumeSlider" min="0" max="100" value="50">
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="card">
+                <div class="title">Circle of Fifths</div>
+                <div class="subtitle">Click on any note to explore its key relationships</div>
+                <div class="circle-container">
+                    <div class="circle-of-fifths" id="circleOfFifths">
+                        <!-- Notes will be positioned here by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="title">Scale Visualization</div>
+                <div class="subtitle" id="scaleInfo">C Major Scale</div>
+                <div class="scale-display" id="scaleDisplay">
+                    <!-- Scale notes will be displayed here -->
+                </div>
+                <div class="keyboard" id="keyboard">
+                    <!-- Virtual keyboard will be rendered here -->
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="title">Interval Analysis</div>
+                <div class="subtitle">Understanding the relationships between notes</div>
+                <div id="intervalInfo">
+                    <p>Select notes on the circle of fifths to see their interval relationships.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            // Music theory data
+            const notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+            const noteValues = { 'C': 0, 'C#': 1, 'D': 2, 'D#': 3, 'E': 4, 'F': 5, 'F#': 6, 'G': 7, 'G#': 8, 'A': 9, 'A#': 10, 'B': 11 };
+
+            const scales = {
+                major: [0, 2, 4, 5, 7, 9, 11],
+                minor: [0, 2, 3, 5, 7, 8, 10],
+                harmonic: [0, 2, 3, 5, 7, 8, 11],
+                melodic: [0, 2, 3, 5, 7, 9, 11],
+                pentatonic: [0, 2, 4, 7, 9],
+                blues: [0, 3, 5, 6, 7, 10],
+                dorian: [0, 2, 3, 5, 7, 9, 10],
+                mixolydian: [0, 2, 4, 5, 7, 9, 10]
+            };
+
+            const chords = {
+                major: [0, 4, 7],
+                minor: [0, 3, 7],
+                diminished: [0, 3, 6],
+                augmented: [0, 4, 8],
+                sus2: [0, 2, 7],
+                sus4: [0, 5, 7],
+                major7: [0, 4, 7, 11],
+                minor7: [0, 3, 7, 10],
+                dom7: [0, 4, 7, 10]
+            };
+
+            // Circle of fifths positions (clockwise from C at top)
+            const circlePositions = [
+                { note: 'C', angle: 0 },
+                { note: 'G', angle: 30 },
+                { note: 'D', angle: 60 },
+                { note: 'A', angle: 90 },
+                { note: 'E', angle: 120 },
+                { note: 'B', angle: 150 },
+                { note: 'F#', angle: 180 },
+                { note: 'C#', angle: 210 },
+                { note: 'G#', angle: 240 },
+                { note: 'D#', angle: 270 },
+                { note: 'A#', angle: 300 },
+                { note: 'F', angle: 330 }
+            ];
+
+            // State
+            let currentRoot = 'C';
+            let currentScale = 'major';
+            let currentChord = 'major';
+            let audioContext = null;
+            let isPlaying = false;
+
+            // Elements
+            const rootNoteSelect = document.getElementById('rootNote');
+            const scaleTypeSelect = document.getElementById('scaleType');
+            const chordTypeSelect = document.getElementById('chordType');
+            const chordDisplay = document.getElementById('chordDisplay');
+            const scaleDisplay = document.getElementById('scaleDisplay');
+            const scaleInfo = document.getElementById('scaleInfo');
+            const circleOfFifths = document.getElementById('circleOfFifths');
+            const keyboard = document.getElementById('keyboard');
+            const playScaleBtn = document.getElementById('playScale');
+            const playChordBtn = document.getElementById('playChord');
+            const stopAudioBtn = document.getElementById('stopAudio');
+            const volumeSlider = document.getElementById('volumeSlider');
+            const progressFill = document.getElementById('progressFill');
+
+            // Initialize audio context
+            function initAudio() {
+                if (!audioContext) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                }
+            }
+
+            // Create note button for circle of fifths
+            function createNoteButton(note, angle) {
+                const button = document.createElement('div');
+                button.className = 'note-button';
+                button.textContent = note;
+                button.dataset.note = note;
+
+                const radius = 120;
+                const centerX = 150;
+                const centerY = 150;
+                const x = centerX + radius * Math.cos((angle - 90) * Math.PI / 180);
+                const y = centerY + radius * Math.sin((angle - 90) * Math.PI / 180);
+
+                button.style.left = `${x - 20}px`;
+                button.style.top = `${y - 20}px`;
+
+                button.addEventListener('click', () => selectNote(note));
+
+                return button;
+            }
+
+            // Select a note and update UI
+            function selectNote(note) {
+                currentRoot = note;
+                rootNoteSelect.value = note;
+
+                // Update active state
+                document.querySelectorAll('.note-button').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                document.querySelector(`[data-note="${note}"]`).classList.add('active');
+
+                updateScaleDisplay();
+                updateChordDisplay();
+                updateKeyboard();
+            }
+
+            // Update scale display
+            function updateScaleDisplay() {
+                const scale = scales[currentScale];
+                const scaleNotes = scale.map(interval =>
+                    notes[(noteValues[currentRoot] + interval) % 12]
+                );
+
+                scaleInfo.textContent = `${currentRoot} ${currentScale.charAt(0).toUpperCase() + currentScale.slice(1)} Scale`;
+
+                scaleDisplay.innerHTML = '';
+                scaleNotes.forEach((note, index) => {
+                    const noteEl = document.createElement('div');
+                    noteEl.className = `scale-note ${index === 0 ? 'root' : ''}`;
+                    noteEl.textContent = note;
+                    scaleDisplay.appendChild(noteEl);
+                });
+            }
+
+            // Update chord display
+            function updateChordDisplay() {
+                const chord = chords[currentChord];
+                const chordNotes = chord.map(interval =>
+                    notes[(noteValues[currentRoot] + interval) % 12]
+                );
+
+                chordDisplay.innerHTML = '';
+                chordNotes.forEach((note, index) => {
+                    const noteEl = document.createElement('div');
+                    noteEl.className = `chord-note ${index === 0 ? 'root' : ''}`;
+                    noteEl.textContent = note;
+                    chordDisplay.appendChild(noteEl);
+                });
+            }
+
+            // Create virtual keyboard
+            function createKeyboard() {
+                const whiteKeys = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+                const blackKeys = ['C#', 'D#', 'F#', 'G#', 'A#'];
+
+                keyboard.innerHTML = '';
+
+                // Create white keys
+                whiteKeys.forEach(note => {
+                    const key = document.createElement('div');
+                    key.className = 'key white';
+                    key.textContent = note;
+                    key.dataset.note = note;
+                    key.addEventListener('click', () => playNote(note));
+                    keyboard.appendChild(key);
+                });
+
+                // Create black keys (positioned between white keys)
+                const blackKeyPositions = [0, 1, 3, 4, 5]; // Positions between white keys
+                blackKeys.forEach((note, index) => {
+                    const key = document.createElement('div');
+                    key.className = 'key black';
+                    key.textContent = note;
+                    key.dataset.note = note;
+                    key.addEventListener('click', () => playNote(note));
+                    keyboard.appendChild(key);
+                });
+            }
+
+            // Update keyboard highlighting
+            function updateKeyboard() {
+                const scale = scales[currentScale];
+                const scaleNotes = scale.map(interval =>
+                    notes[(noteValues[currentRoot] + interval) % 12]
+                );
+
+                document.querySelectorAll('.key').forEach(key => {
+                    key.classList.remove('active');
+                    if (scaleNotes.includes(key.dataset.note)) {
+                        key.classList.add('active');
+                    }
+                });
+            }
+
+            // Play a single note
+            function playNote(note) {
+                initAudio();
+
+                const frequency = getNoteFrequency(note);
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+
+                oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+                oscillator.type = 'sine';
+
+                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                gainNode.gain.linearRampToValueAtTime(volumeSlider.value / 200, audioContext.currentTime + 0.01);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 1);
+
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 1);
+            }
+
+            // Get frequency for a note
+            function getNoteFrequency(note) {
+                const noteIndex = noteValues[note];
+                const octave = 4; // Middle octave
+                return 440 * Math.pow(2, (noteIndex - 9 + (octave - 4) * 12) / 12);
+            }
+
+            // Play scale
+            function playScale() {
+                if (isPlaying) return;
+
+                initAudio();
+                isPlaying = true;
+                playScaleBtn.textContent = 'Playing...';
+
+                const scale = scales[currentScale];
+                const scaleNotes = scale.map(interval =>
+                    notes[(noteValues[currentRoot] + interval) % 12]
+                );
+
+                let currentTime = audioContext.currentTime;
+                const noteDuration = 0.5;
+
+                scaleNotes.forEach((note, index) => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+
+                    oscillator.frequency.setValueAtTime(getNoteFrequency(note), currentTime);
+                    oscillator.type = 'sine';
+
+                    gainNode.gain.setValueAtTime(0, currentTime);
+                    gainNode.gain.linearRampToValueAtTime(volumeSlider.value / 200, currentTime + 0.01);
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, currentTime + noteDuration);
+
+                    oscillator.start(currentTime);
+                    oscillator.stop(currentTime + noteDuration);
+
+                    currentTime += noteDuration;
+                });
+
+                setTimeout(() => {
+                    isPlaying = false;
+                    playScaleBtn.textContent = 'Play Scale';
+                }, scaleNotes.length * noteDuration * 1000);
+            }
+
+            // Play chord
+            function playChord() {
+                if (isPlaying) return;
+
+                initAudio();
+                isPlaying = true;
+                playChordBtn.textContent = 'Playing...';
+
+                const chord = chords[currentChord];
+                const chordNotes = chord.map(interval =>
+                    notes[(noteValues[currentRoot] + interval) % 12]
+                );
+
+                const currentTime = audioContext.currentTime;
+                const duration = 2;
+
+                chordNotes.forEach(note => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+
+                    oscillator.frequency.setValueAtTime(getNoteFrequency(note), currentTime);
+                    oscillator.type = 'sine';
+
+                    gainNode.gain.setValueAtTime(0, currentTime);
+                    gainNode.gain.linearRampToValueAtTime(volumeSlider.value / 200, currentTime + 0.01);
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, currentTime + duration);
+
+                    oscillator.start(currentTime);
+                    oscillator.stop(currentTime + duration);
+                });
+
+                setTimeout(() => {
+                    isPlaying = false;
+                    playChordBtn.textContent = 'Play Chord';
+                }, duration * 1000);
+            }
+
+            // Initialize circle of fifths
+            function initCircleOfFifths() {
+                circleOfFifths.innerHTML = '';
+                circlePositions.forEach(pos => {
+                    const button = createNoteButton(pos.note, pos.angle);
+                    circleOfFifths.appendChild(button);
+                });
+            }
+
+            // Event listeners
+            rootNoteSelect.addEventListener('change', (e) => {
+                currentRoot = e.target.value;
+                selectNote(currentRoot);
+            });
+
+            scaleTypeSelect.addEventListener('change', (e) => {
+                currentScale = e.target.value;
+                updateScaleDisplay();
+                updateKeyboard();
+            });
+
+            chordTypeSelect.addEventListener('change', (e) => {
+                currentChord = e.target.value;
+                updateChordDisplay();
+            });
+
+            playScaleBtn.addEventListener('click', playScale);
+            playChordBtn.addEventListener('click', playChord);
+            stopAudioBtn.addEventListener('click', () => {
+                if (audioContext) {
+                    audioContext.close();
+                    audioContext = null;
+                }
+                isPlaying = false;
+                playScaleBtn.textContent = 'Play Scale';
+                playChordBtn.textContent = 'Play Chord';
+            });
+
+            // Initialize everything
+            initCircleOfFifths();
+            createKeyboard();
+            selectNote('C');
+            updateScaleDisplay();
+            updateChordDisplay();
+        })();
+    </script>
+</body>
+
+</html>

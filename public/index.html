@@ -1,24 +1,188 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Fidget Switch</title>
-    <link rel="stylesheet" href="./style.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
-    <meta name="theme-color" content="#0a0a0a" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Joe's Website</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            overflow-x: hidden;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.1s ease-out;
+            position: relative;
+        }
+
+        .profile-section {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .profile-picture {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .name {
+            font-size: 2.5rem;
+            font-weight: 300;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .title {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .info-section {
+            margin-bottom: 2rem;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 0.5rem 0;
+        }
+
+        .info-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 1rem;
+            opacity: 0.7;
+        }
+
+        .info-text {
+            font-size: 1rem;
+            color: #555;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            font-family: inherit;
+            font-size: 1rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            text-align: center;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .card {
+                padding: 2rem;
+                margin: 1rem;
+            }
+
+            .name {
+                font-size: 2rem;
+            }
+
+            .profile-picture {
+                width: 100px;
+                height: 100px;
+                font-size: 2.5rem;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <div class="container">
-        <div class="rocker-bezel" id="rockerBezel" aria-label="Power switch" role="button" tabindex="0">
-            <div class="rocker" id="rocker"></div>
+    <div class="card" id="card">
+        <div class="profile-section">
+            <div class="profile-picture">J</div>
+            <h1 class="name">Joe Reiner</h1>
+            <p class="title">Software Developer & Creative Technologist</p>
         </div>
+
+        <div class="info-section">
+            <div class="info-item">
+                <div class="info-icon">📍</div>
+                <div class="info-text">Based in San Francisco, CA</div>
+            </div>
+            <div class="info-item">
+                <div class="info-icon">💻</div>
+                <div class="info-text">Full-stack development & UI/UX design</div>
+            </div>
+            <div class="info-item">
+                <div class="info-icon">🎨</div>
+                <div class="info-text">Passionate about creative coding</div>
+            </div>
+            <div class="info-item">
+                <div class="info-icon">🚀</div>
+                <div class="info-text">Building the future, one line at a time</div>
+            </div>
+        </div>
+
+        <a href="widget.html" class="button">Explore My Widget</a>
     </div>
-    <script src="./script.js"></script>
+
+    <script>
+        const card = document.getElementById('card');
+
+        document.addEventListener('mousemove', (e) => {
+            const { clientX, clientY } = e;
+            const { innerWidth, innerHeight } = window;
+
+            const xPos = (clientX / innerWidth) - 0.5;
+            const yPos = (clientY / innerHeight) - 0.5;
+
+            const rotateX = yPos * 10;
+            const rotateY = xPos * -10;
+
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+
+        document.addEventListener('mouseleave', () => {
+            card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+        });
+    </script>
 </body>
 
 </html>
