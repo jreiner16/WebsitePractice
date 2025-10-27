@@ -13,25 +13,45 @@
         <div class="profile-section">
             <img src="profile.jpg" alt="Joe R" class="profile-picture">
             <h1 class="name">Joe R</h1>
-            <p class="title">computers, art, skateboards, nature, drums</p>
+            <p class="title">full stack developer and designer</p>
         </div>
 
         <div class="info-section">
-            <div class="info-item">
-                <div class="info-icon">📍</div>
-                <div class="info-text">based in Los Angeles, CA</div>
+            <div class="code-bubble" id="intro-code">
+                <div class="code-header">
+                    <div class="code-titlebar">
+                        <div class="dots">
+                            <span class="dot red"></span>
+                            <span class="dot yellow"></span>
+                            <span class="dot green"></span>
+                        </div>
+                        <div class="code-title">root.py</div>
+                    </div>
+                    <button class="run-button" id="run-intro">run</button>
+                </div>
+                <pre><code>in = "kl, l'p mrh, d riwzduh ghyhorshu dqg surfhfw ghvljqhu! l'p hadhulhqfhg zlwk dl, zhe/preloh/ghvnskrs ghyhorsphqw dqg jdph ghyhorsphqw. zkhq l'p qrw grlqj wkdw, l oryh fdpslqj, vndwherdulqj dqg guxpplqj."
+out = ""
+for c in msg:
+    if c.isalpha():
+        out += chr((ord(c.lower()) - 97 - shift) % 26 + 97)
+    else:
+        out += c
+print(out)</code></pre>
             </div>
-            <div class="info-item">
-                <div class="info-icon">💻</div>
-                <div class="info-text">web, mobile and desktop development</div>
-            </div>
-            <div class="info-item">
-                <div class="info-icon">🛹</div>
-                <div class="info-text">steezy skater</div>
-            </div>
-            <div class="info-item">
-                <div class="info-icon">🥁</div>
-                <div class="info-text">jazz and rock drummer</div>
+
+            <div class="terminal" id="intro-terminal" style="display:none;">
+                <div class="terminal-header">
+                    <div class="terminal-dots">
+                        <span class="dot red"></span>
+                        <span class="dot yellow"></span>
+                        <span class="dot green"></span>
+                    </div>
+                    <div class="terminal-title">bash</div>
+                </div>
+                <div class="terminal-body">
+                    <div class="terminal-line"><span class="prompt">$</span><span class="typed"></span><span
+                            class="cursor"></span></div>
+                </div>
             </div>
         </div>
 

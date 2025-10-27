@@ -8,6 +8,8 @@ body {
     color: white;
     font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
     min-height: 100vh;
+    min-height: 100dvh;
+    /* Use dynamic viewport height when available */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -31,17 +33,13 @@ body {
 
 /* Background variations */
 body.index {
-    background: url('background.jpeg') center/cover no-repeat;
-    background-attachment: fixed;
-    background-size: 120% 120%;
+    background: url('background.jpg') center/cover no-repeat;
     transition: background-position 0.1s ease-out;
 }
 
 body.projects,
 body.error {
-    background: url('background.jpeg') center/cover no-repeat;
-    background-attachment: fixed;
-    background-size: 120% 120%;
+    background: url('background.jpg') center/cover no-repeat;
     transition: background-position 0.1s ease-out;
 }
 
@@ -71,12 +69,28 @@ body.error {
     transition: transform 0.1s ease-out;
     position: relative;
     backdrop-filter: blur(10px);
+    /* Scroll the main content panel, not the page background */
+    max-height: calc(100vh - 4rem);
+    max-height: calc(100dvh - 4rem);
+    /* Avoid overlap with browser chrome on mobile */
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    /* Ensure bottom content clears mobile browser bars */
+    padding-bottom: calc(3rem + env(safe-area-inset-bottom));
 }
 
 
 /* Profile section (index page) */
 .profile-section {
-    text-align: center;
+    /* Layout: text left, photo right */
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    column-gap: 1.5rem;
+    row-gap: 0.25rem;
+    align-items: center;
+    text-align: left;
     margin-bottom: 2rem;
 }
 
@@ -84,10 +98,27 @@ body.error {
     width: 120px;
     height: 120px;
     border-radius: 12px;
-    margin: 0 auto 1.5rem;
+    margin: 0;
     display: block;
     object-fit: cover;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Place items in grid areas */
+.profile-section .profile-picture {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    justify-self: end;
+}
+
+.profile-section .name {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.profile-section .title {
+    grid-column: 1;
+    grid-row: 2;
 }
 
 .name {
@@ -128,6 +159,286 @@ body.error {
     font-size: 1rem;
     color: #e0e0e0;
     font-weight: 400;
+}
+
+/* Code bubble styles */
+.code-bubble {
+    background: #111517;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 0;
+    overflow: hidden;
+    /* Keep relative in case of future positioned children */
+    position: relative;
+    font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
+    color: #d4d4d4;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+}
+
+.code-bubble .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0;
+    position: static;
+    background: #0d1113;
+    border-bottom: 1px solid #222;
+    padding: 0.35rem 0.5rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.code-bubble .code-titlebar {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.code-bubble .dots {
+    display: inline-flex;
+    gap: 6px;
+}
+
+.code-bubble .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #444;
+}
+
+.code-bubble .dot.red {
+    background: #ff5f56;
+}
+
+.code-bubble .dot.yellow {
+    background: #ffbd2e;
+}
+
+.code-bubble .dot.green {
+    background: #27c93f;
+}
+
+.code-bubble .code-title {
+    font-size: 0.85rem;
+    color: #9aa0a6;
+}
+
+.code-bubble pre {
+    margin: 0;
+    overflow: visible;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    padding: 0.5rem 0.75rem;
+}
+
+/* VS Code Dark+ inspired token colors */
+.code-bubble .token.comment {
+    color: #6A9955;
+}
+
+.code-bubble .token.keyword {
+    color: #C586C0;
+}
+
+.code-bubble .token.string {
+    color: #CE9178;
+}
+
+.code-bubble .token.number {
+    color: #B5CEA8;
+}
+
+.code-bubble .token.function {
+    color: #DCDCAA;
+}
+
+.code-bubble .token.builtin {
+    color: #4FC1FF;
+}
+
+.code-bubble .token.operator {
+    color: #D4D4D4;
+}
+
+.code-bubble code,
+.output-bubble code {
+    color: #d4d4d4;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.run-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 0.75rem;
+}
+
+.run-button {
+    background: transparent;
+    color: #9aa0a6;
+    border: none;
+    border-radius: 6px;
+    padding: 0 0.5rem;
+    font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    height: 1.5em;
+    line-height: 1.5em;
+}
+
+.run-button:hover {
+    color: #9aa0a6;
+    background: #3e3e3e;
+}
+
+/* Output bubble */
+.output-bubble {
+    background: #1e1e1e;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 0 0.5rem;
+    margin-top: 0.5rem;
+    font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
+    min-height: 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* Remove intrinsic top/bottom gaps from pre/code inside output */
+.output-bubble pre {
+    margin: 0;
+    padding: 0;
+    white-space: pre-wrap;
+    line-height: 1;
+}
+
+.output-bubble code {
+    display: inline;
+    margin: 0;
+    padding: 0;
+    white-space: pre-wrap;
+}
+
+.output-bubble .prompt {
+    color: #7BA7D1;
+}
+
+.cursor {
+    display: inline-block;
+    width: 10px;
+    background: #d1d5db;
+    animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+    50% {
+        background: transparent;
+    }
+}
+
+/* Ensure output text wraps correctly even inside pre/code */
+.output-bubble .output-line {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    line-height: 1;
+    padding: 0.1rem 0;
+}
+
+.output-bubble .prompt,
+.output-bubble #typed-output,
+.output-bubble .cursor {
+    line-height: 1;
+}
+
+.output-bubble code {
+    white-space: pre-wrap;
+}
+
+#typed-output {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+/* Terminal window */
+.terminal {
+    margin-top: 0.5rem;
+    border: 1px solid #333;
+    border-radius: 8px;
+    background: #111517;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
+    display: flex;
+    flex-direction: column;
+}
+
+.terminal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #0d1113;
+    border-bottom: 1px solid #222;
+    padding: 0.35rem 0.5rem;
+}
+
+.terminal-dots {
+    display: inline-flex;
+    gap: 6px;
+}
+
+.terminal-dots .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #444;
+}
+
+.terminal-dots .dot.red {
+    background: #ff5f56;
+}
+
+.terminal-dots .dot.yellow {
+    background: #ffbd2e;
+}
+
+.terminal-dots .dot.green {
+    background: #27c93f;
+}
+
+.terminal-title {
+    color: #9aa0a6;
+    font-size: 0.85rem;
+}
+
+.terminal-body {
+    padding: 0.5rem 0.75rem;
+}
+
+.terminal-line {
+    display: inline;
+    color: #d4d4d4;
+    line-height: 1.25;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.terminal .prompt {
+    color: #7BA7D1;
+    margin-right: 0.5rem;
+}
+
+.terminal .cursor {
+    display: inline-block;
+    width: 8px;
+    height: 1em;
+    background: #d1d5db;
+    animation: blink 1s step-end infinite;
+    vertical-align: baseline;
 }
 
 /* Header section (projects page) */
@@ -345,6 +656,31 @@ body.error {
     .card {
         padding: 2rem;
         margin: 1rem;
+        max-height: calc(100vh - 2rem);
+        max-height: calc(100dvh - 2rem);
+        padding-bottom: calc(2rem + env(safe-area-inset-bottom));
+    }
+
+    /* Stack header on small screens */
+    .profile-section {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+        text-align: center;
+    }
+
+    .profile-section .profile-picture {
+        grid-column: 1;
+        grid-row: 1;
+        justify-self: center;
+        margin: 0 auto 1rem;
+    }
+
+    .profile-section .name {
+        grid-row: 2;
+    }
+
+    .profile-section .title {
+        grid-row: 3;
     }
 
     .name {
@@ -364,6 +700,7 @@ body.error {
         height: 350px;
         padding: 0.75rem;
     }
+
 
     .navigation {
         flex-direction: column;
