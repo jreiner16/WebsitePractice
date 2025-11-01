@@ -27,11 +27,11 @@
         body {
             margin: 0;
             height: 100%;
-            background: radial-gradient(1200px 600px at 20% 20%, #0b1220, #0f172a 60%),
-                radial-gradient(800px 500px at 80% 0%, #0b1324, transparent 60%),
-                radial-gradient(1000px 600px at 80% 100%, #0a1326, transparent 60%);
+            background: radial-gradient(900px 520px at 20% 20%, #0b1220, #0f172a 60%),
+                radial-gradient(700px 420px at 80% 0%, #0b1324, transparent 60%),
+                radial-gradient(900px 520px at 80% 100%, #0a1326, transparent 60%);
             color: var(--text);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: ui-monospace, Menlo, Monaco, 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
             overflow: hidden;
         }
 
@@ -57,16 +57,15 @@
 
         .main-content {
             padding: 20px;
-            overflow-y: auto;
+            overflow: hidden;
         }
 
         .card {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 12px;
             padding: 16px;
             margin-bottom: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
         }
 
         .title {
@@ -141,18 +140,18 @@
         }
 
         button {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.10);
             border-radius: 8px;
             padding: 8px 14px;
             color: var(--text);
             cursor: pointer;
             font-size: 14px;
-            transition: all 0.15s ease;
+            transition: background 0.12s ease, border-color 0.12s ease, transform 0.05s ease;
         }
 
         button:hover {
-            background: rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.08);
             border-color: var(--accent);
         }
 
@@ -166,6 +165,82 @@
         button:disabled {
             opacity: 0.6;
             cursor: not-allowed;
+        }
+
+        /* Pill selectors */
+        .pill-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .pill {
+            display: inline;
+            padding: 0;
+            color: var(--muted);
+            font-size: 14px;
+            cursor: pointer;
+            transition: color 0.12s ease;
+            user-select: none;
+        }
+
+        .pill+.pill::before {
+            content: " / ";
+            color: rgba(255, 255, 255, 0.18);
+            margin: 0 4px;
+        }
+
+        .pill:hover {
+            color: var(--text);
+        }
+
+        .pill.active {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        /* Range slider (BPM) */
+        .range-wrap {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .range-value {
+            font-size: 14px;
+            color: var(--text);
+            min-width: 44px;
+            text-align: right;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 8px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border: none;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
         }
 
         .actions {
@@ -234,32 +309,37 @@
         .canvas-wrap {
             position: relative;
             border-radius: 10px;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
             border: 1px solid rgba(255, 255, 255, 0.08);
-            background: rgba(0, 0, 0, 0.18);
+            background: rgba(255, 255, 255, 0.02);
         }
 
         canvas {
             display: block;
             width: 100%;
-            height: 280px;
-            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+            height: auto;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.015));
         }
 
         .start-overlay {
             position: absolute;
             inset: 0;
             display: none;
-            align-items: center;
-            justify-content: center;
-            background: radial-gradient(500px 260px at 50% 50%, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.75));
+            background: transparent;
             border-top-left-radius: 10px;
             border-top-right-radius: 10px;
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
+            backdrop-filter: blur(36px);
+            -webkit-backdrop-filter: blur(36px);
+            display: grid;
+            grid-template-rows: auto 1fr;
+            align-content: start;
+            justify-items: center;
+            padding-top: 12px;
         }
 
         .start-content {
+            width: 100%;
             text-align: center;
         }
 
@@ -288,6 +368,94 @@
             color: var(--muted);
         }
 
+        .start-bar {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            padding: 12px 18px;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            justify-content: space-between;
+            flex-wrap: nowrap;
+        }
+
+        .sb-left,
+        .sb-right {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            flex-wrap: nowrap;
+        }
+
+        /* Even internal spacing with symmetric padding and separators */
+        .sb-left>div,
+        .sb-right>div {
+            position: relative;
+            padding: 0 14px;
+        }
+
+        .sb-left>div:first-child,
+        .sb-right>div:first-child {
+            padding-left: 0;
+        }
+
+        .sb-left>div:last-child,
+        .sb-right>div:last-child {
+            padding-right: 0;
+        }
+
+        .sb-left>div+div::before,
+        .sb-right>div+div::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1px;
+            height: 22px;
+            background: rgba(255, 255, 255, 0.16);
+        }
+
+        /* Center bar divider */
+        .bar-sep {
+            width: 1px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.16);
+            margin: 0 14px;
+        }
+
+        .start-title {
+            display: none;
+        }
+
+        .start-hint {
+            font-size: 18px;
+            color: var(--muted);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        /* Absolute center hint overlay, independent of top bar */
+        .start-hint-wrap {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            /* allow clicks on child only */
+        }
+
+        .start-hint-wrap .start-hint {
+            pointer-events: auto;
+        }
+
+        .pill-group {
+            white-space: nowrap;
+        }
+
         .summary-overlay {
             position: fixed;
             left: 0;
@@ -298,19 +466,18 @@
             display: none;
             align-items: center;
             justify-content: center;
-            background: radial-gradient(500px 260px at 50% 50%, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.8));
+            background: transparent;
             border-top-left-radius: 10px;
             border-top-right-radius: 10px;
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
+            backdrop-filter: blur(36px);
+            -webkit-backdrop-filter: blur(36px);
         }
 
         .summary-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.10);
             border-radius: 12px;
             padding: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
             width: min(680px, 92%);
         }
 
@@ -346,24 +513,14 @@
         }
 
         .countin-number {
-            font-family: Georgia, 'Times New Roman', serif;
+            font-family: ui-monospace, Menlo, Monaco, 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
             font-weight: 700;
             font-size: 56px;
             color: rgba(229, 231, 235, 0.95);
             text-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
         }
 
-        .overlay-msg {
-            position: absolute;
-            top: 8px;
-            right: 10px;
-            padding: 6px 10px;
-            border-radius: 6px;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            font-size: 12px;
-            color: var(--muted);
-        }
+
 
         .feedback {
             margin-top: 8px;
@@ -394,7 +551,60 @@
                 border-bottom: 1px solid rgba(255, 255, 255, 0.06);
             }
         }
+
+        /* Mobile adjustments */
+        @media (max-width: 640px) {
+            .start-bar {
+                flex-wrap: wrap;
+                gap: 10px;
+                justify-content: center;
+            }
+
+            .sb-left,
+            .sb-right {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .sb-left>div,
+            .sb-right>div {
+                padding: 0 8px;
+            }
+
+            .sb-left>div+div::before,
+            .sb-right>div+div::before {
+                display: none;
+            }
+
+            .bar-sep {
+                display: none;
+            }
+        }
+
+        /* uPlot dark theme adjustments */
+        .uplot {
+            font-family: ui-monospace, Menlo, Monaco, 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+        }
+
+        .uplot .u-legend {
+            display: none;
+        }
+
+        .uplot .u-axis {
+            color: var(--muted);
+        }
+
+        .uplot .u-grid {
+            stroke: rgba(255, 255, 255, 0.08);
+        }
+
+        .uplot .u-select {
+            background: rgba(96, 165, 250, 0.08);
+            border: 1px solid rgba(96, 165, 250, 0.3);
+        }
     </style>
+    <link rel="stylesheet" href="https://unpkg.com/uplot@1.6.28/dist/uPlot.min.css" />
+    <script defer src="https://unpkg.com/uplot@1.6.28/dist/uPlot.iife.min.js"></script>
 </head>
 
 <body>
@@ -442,64 +652,71 @@
 
         <div class="main-content">
             <div class="card">
-                <div class="title">Rhythm Sheet</div>
-                <div class="subtitle">Press space or tap while the playhead crosses each note head</div>
+                <div class="title">Rhythm Reading</div>
+                <div class="subtitle">Practice sight-reading rhythms</div>
                 <div class="canvas-wrap">
                     <canvas id="sheet"></canvas>
                     <div class="start-overlay" id="startOverlay">
                         <div class="start-content">
-                            <div class="title" style="margin-bottom:8px;">Rhythm Practice</div>
-                            <div class="row"
-                                style="max-width:520px; margin:0 auto 10px auto; grid-template-columns: 1fr 120px;">
-                                <div>
-                                    <label class="control-label" for="bpm">BPM</label>
-                                    <input id="bpm" type="number" min="30" max="240" step="1" value="100" />
+                            <div class="start-bar">
+                                <div class="sb-left">
+                                    <div>
+                                        <label class="control-label" for="bpm">BPM</label>
+                                        <div class="range-wrap">
+                                            <input id="bpm" type="range" min="30" max="240" step="1" value="100" />
+                                            <div class="range-value"><span id="bpmVal">100</span></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="control-label" for="measures">Measures</label>
+                                        <input id="measures" type="number" min="1" max="32" step="1" value="4"
+                                            style="display:none;" />
+                                        <div id="measuresGroup" class="pill-group"></div>
+                                    </div>
                                 </div>
-                                <div>
-                                    <label class="control-label" for="measures">Measures</label>
-                                    <input id="measures" type="number" min="1" max="16" step="1" value="4" />
+                                <div class="bar-sep"></div>
+                                <div class="sb-right">
+                                    <div>
+                                        <label class="control-label" for="timeSig">Time Signature</label>
+                                        <select id="timeSig" style="display:none;">
+                                            <option value="4/4">4/4</option>
+                                            <option value="3/4">3/4</option>
+                                            <option value="2/4">2/4</option>
+                                            <option value="6/8">6/8</option>
+                                        </select>
+                                        <div id="timeSigGroup" class="pill-group"></div>
+                                    </div>
+                                    <div>
+                                        <label class="control-label" for="difficulty">Difficulty</label>
+                                        <select id="difficulty" style="display:none;">
+                                            <option value="easy">Easy</option>
+                                            <option value="medium">Medium</option>
+                                            <option value="hard">Hard</option>
+                                        </select>
+                                        <div id="difficultyGroup" class="pill-group"></div>
+                                    </div>
+                                    <div>
+                                        <label class="switch">
+                                            <input id="metronome" type="checkbox" checked />
+                                            <span>Metronome</span>
+                                        </label>
+                                        <label class="switch" style="margin-left:10px;">
+                                            <input id="countIn" type="checkbox" checked />
+                                            <span>Count-in</span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="row"
-                                style="max-width:520px; margin:0 auto 14px auto; grid-template-columns: 1fr 1fr;">
-                                <div>
-                                    <label class="control-label" for="timeSig">Time Signature</label>
-                                    <select id="timeSig">
-                                        <option value="4/4">4/4</option>
-                                        <option value="3/4">3/4</option>
-                                        <option value="2/4">2/4</option>
-                                        <option value="6/8">6/8</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="control-label" for="difficulty">Difficulty</label>
-                                    <select id="difficulty">
-                                        <option value="easy">Easy</option>
-                                        <option value="medium">Medium</option>
-                                        <option value="hard">Hard</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row"
-                                style="max-width:520px; margin:0 auto 16px auto; grid-template-columns: 1fr 1fr;">
-                                <label class="switch" style="justify-self:center;">
-                                    <input id="metronome" type="checkbox" checked />
-                                    <span>Metronome</span>
-                                </label>
-                                <label class="switch" style="justify-self:center;">
-                                    <input id="countIn" type="checkbox" checked />
-                                    <span>Count-in</span>
-                                </label>
-                            </div>
-                            <button id="bigStart" class="big-start">Start</button>
-                            <div class="hint">Press Space to start • Tap staff to hit</div>
+                        </div>
+                        <div class="start-hint-wrap">
+                            <div id="startHint" class="start-hint">press space or tap to start</div>
                         </div>
                     </div>
                     <div class="summary-overlay" id="summaryOverlay">
                         <div class="summary-card">
                             <div class="title">Session Summary</div>
-                            <div class="subtitle">Accuracy over time</div>
-                            <canvas id="accuracyChart" style="width:100%;height:160px;display:block;"></canvas>
+                            <div class="subtitle">Timing offsets per note (ms)</div>
+                            <div id="timingChart" style="width:100%;height:160px;"></div>
                             <div class="summary-grid">
                                 <div class="summary-stat">
                                     <div class="label">Accuracy</div>
@@ -527,7 +744,6 @@
                     <div class="countin-overlay" id="countInOverlay">
                         <div class="countin-number" id="countInNumber"></div>
                     </div>
-                    <div class="overlay-msg" id="overlayMsg">Ready</div>
                 </div>
             </div>
         </div>
@@ -544,19 +760,22 @@
                     // Simpler: quarters only
                     allowedDurTicks: [4],
                     restChance: 0.18,
-                    toleranceMs: 140
+                    toleranceMs: 180,
+                    firstBeatBonusMs: 80
                 },
                 medium: {
                     // Previous easy
                     allowedDurTicks: [4, 2], // quarter, eighth
                     restChance: 0.12,
-                    toleranceMs: 90
+                    toleranceMs: 120,
+                    firstBeatBonusMs: 60
                 },
                 hard: {
                     // Slightly easier than before: drop sixteenths, keep dotted eighths
                     allowedDurTicks: [4, 3, 2],
                     restChance: 0.18,
-                    toleranceMs: 55
+                    toleranceMs: 75,
+                    firstBeatBonusMs: 45
                 }
             };
 
@@ -579,15 +798,15 @@
                 btnStop: document.getElementById('stop'),
                 btnReset: document.getElementById('reset'),
                 sheet: document.getElementById('sheet'),
-                overlay: document.getElementById('overlayMsg'),
+                canvasWrap: document.querySelector('.canvas-wrap'),
                 startOverlay: document.getElementById('startOverlay'),
-                bigStart: document.getElementById('bigStart'),
+                startHint: document.getElementById('startHint'),
                 countInOverlay: document.getElementById('countInOverlay'),
                 countInNumber: document.getElementById('countInNumber'),
                 summaryOverlay: document.getElementById('summaryOverlay'),
                 summaryRetry: document.getElementById('summaryRetry'),
                 summaryContinue: document.getElementById('summaryContinue'),
-                accuracyChart: document.getElementById('accuracyChart'),
+                timingChart: document.getElementById('timingChart'),
                 statAcc: document.getElementById('stat-acc'),
                 statHits: document.getElementById('stat-hits'),
                 statMiss: document.getElementById('stat-miss'),
@@ -605,10 +824,41 @@
             // Canvas setup
             const ctx = el.sheet.getContext('2d');
             let canvasWidth = 0, canvasHeight = 0, dpr = 1;
+            function getMeasuresPerRow() {
+                // Determine number of measures per row responsively (1..4)
+                const leftPad = 64, rightPad = 12;
+                const usable = Math.max(100, canvasWidth - leftPad - rightPad);
+                const minMeasurePx = 240; // minimum visual width per measure on small screens
+                const mpr = Math.floor(usable / minMeasurePx);
+                return Math.max(1, Math.min(4, mpr));
+            }
+            function sizeCanvasWrap() {
+                const wrap = document.querySelector('.canvas-wrap');
+                if (!wrap) return;
+                const rect = wrap.getBoundingClientRect();
+                const bottomPad = 20;
+                const h = Math.max(240, Math.floor(window.innerHeight - rect.top - bottomPad));
+                wrap.style.height = `${h}px`;
+            }
             function resizeCanvas() {
+                sizeCanvasWrap();
                 const rect = el.sheet.getBoundingClientRect();
                 canvasWidth = Math.max(600, Math.floor(rect.width));
-                canvasHeight = 280;
+                // Dynamic height based on rows (max 4 measures per row)
+                const lineSpacing = 16;
+                const topPad = 28;
+                const bottomPad = 36;
+                let computedHeight = 280;
+                if (pattern) {
+                    const staffHeight = lineSpacing * 4;
+                    const measuresPerRow = getMeasuresPerRow();
+                    const measureTicks = pattern.ticksPerBeat * pattern.timeSig.beatsPerMeasure;
+                    const totalMeasures = Math.ceil(pattern.totalTicks / measureTicks);
+                    const numRows = Math.max(1, Math.ceil(totalMeasures / measuresPerRow));
+                    const rowStride = staffHeight + 60;
+                    computedHeight = topPad + numRows * rowStride + bottomPad;
+                }
+                canvasHeight = computedHeight;
                 dpr = Math.max(1, Math.floor(window.devicePixelRatio || 1));
                 el.sheet.width = canvasWidth * dpr;
                 el.sheet.height = canvasHeight * dpr;
@@ -662,11 +912,18 @@
             let stats = { hits: 0, misses: 0, combo: 0 };
             let maxCombo = 0;
             let accSamples = []; // {t: secondsFromStart, acc: 0..1}
+            let timingPlot = null; // uPlot instance for summary
+            let timingResizeHandler = null;
+            let autoScrollRow = -1;
+            let lastHitAtSec = -Infinity;
+            const HIT_COOLDOWN_SEC = 0.12;
 
             // Pattern generation
             function generatePattern() {
                 const bpm = clamp(Number(el.bpm.value || 100), 30, 240);
-                const measures = clamp(Number(el.measures.value || 4), 1, 16);
+                const allowedMeasures = [1, 4, 16, 32];
+                let mInput = Number(el.measures.value || 4);
+                const measures = allowedMeasures.includes(mInput) ? mInput : 4;
                 const { n: beatsPerMeasure, d: beatNote } = parseTimeSig(el.timeSig.value);
                 const diff = difficultyConfig[el.difficulty.value] || difficultyConfig.easy;
 
@@ -698,9 +955,16 @@
                         const inBeat = t % ticksPerBeat;
 
                         if (el.difficulty.value === 'medium' && isSimpleMeter && inBeat === 0 && (measureTicks - t) >= ticksPerBeat && Math.random() < 0.45) {
-                            // Insert an eighth-note triplet group for this beat
+                            // Insert an eighth-note triplet group for this beat, sometimes with missing notes
+                            const tripletRestProb = 0.35;
+                            const restFlags = [0, 1, 2].map(() => Math.random() < tripletRestProb);
+                            if (restFlags.every(v => v)) {
+                                // Ensure at least one note present
+                                const keepIdx = Math.floor(Math.random() * 3);
+                                restFlags[keepIdx] = false;
+                            }
                             for (let i = 0; i < 3; i++) {
-                                const isRest = false;
+                                const isRest = !!restFlags[i];
                                 items.push({ startTick: m * measureTicks + t, durTicks: DUR.tripletEighth, isRest, state: 'pending', hitDeltaMs: null, isTriplet: true, isDotted: false });
                                 t += DUR.tripletEighth;
                             }
@@ -745,8 +1009,8 @@
                 stats = { hits: 0, misses: 0, combo: 0 };
                 updateStats();
                 buildSchedule();
-                drawSheet();
-                el.overlay.textContent = 'Generated';
+                // Ensure canvas resizes to new multi-row height before drawing
+                resizeCanvas();
             }
 
             // Build schedule from pattern and settings
@@ -784,12 +1048,13 @@
                 stats = { hits: 0, misses: 0, combo: 0 };
                 maxCombo = 0;
                 accSamples = [];
+                autoScrollRow = -1;
                 nextEventIdx = pattern.items.findIndex(i => !i.isRest);
                 if (nextEventIdx < 0) nextEventIdx = 0;
                 updateStats();
                 el.progressFill.style.width = '0%';
-                el.overlay.textContent = 'Playing...';
                 if (el.startOverlay) el.startOverlay.style.display = 'none';
+                if (el.canvasWrap) el.canvasWrap.style.overflowY = 'auto';
 
                 // Clear any prior scheduled clicks before scheduling new ones
                 stopAllScheduledMetronome(nowAudio);
@@ -840,8 +1105,9 @@
                 if (audioCtx && audioCtx.state === 'running') {
                     // Keep context for next play to avoid iOS relock; do not close
                 }
-                el.overlay.textContent = 'Stopped';
+
                 if (el.startOverlay) el.startOverlay.style.display = 'flex';
+                if (el.canvasWrap) { el.canvasWrap.scrollTop = 0; el.canvasWrap.style.overflowY = 'hidden'; }
                 // Ensure no scheduled metronome remains
                 if (audioCtx) stopAllScheduledMetronome(audioCtx.currentTime);
                 drawSheet();
@@ -873,7 +1139,7 @@
                 if (now >= endSec + 0.05) {
                     isPlaying = false;
                     if (audioCtx) stopAllScheduledMetronome(audioCtx.currentTime);
-                    el.overlay.textContent = 'Finished';
+
                     drawSheet();
                     showSummary();
                     return;
@@ -910,20 +1176,35 @@
                 ensureAudio();
                 const audioRunning = audioCtx && audioCtx.state === 'running';
                 const now = audioRunning ? audioCtx.currentTime : (performance.now() / 1000);
+                if (now - lastHitAtSec < HIT_COOLDOWN_SEC) return;
                 const diff = difficultyConfig[el.difficulty.value] || difficultyConfig.easy;
-                const tol = diff.toleranceMs / 1000;
+                const baseTolMs = diff.toleranceMs;
+                const firstBonusMs = diff.firstBeatBonusMs || 0;
+                const maxWindowFactor = 2.5;
+                const measureTicks = pattern.ticksPerBeat * pattern.timeSig.beatsPerMeasure;
+                const startSec = audioRunning ? schedule.startTimeAudio : schedule.startTimeVisual;
+                const nowTick = Math.max(0, (now - startSec) / schedule.secondsPerTick);
+                const nowMeasure = Math.floor(nowTick / measureTicks);
 
                 // Find next pending note
                 let idx = nextEventIdx;
                 while (idx < pattern.items.length && pattern.items[idx].isRest) idx++;
                 if (idx >= pattern.items.length) return;
                 const it = pattern.items[idx];
-                const startSec = audioRunning ? schedule.startTimeAudio : schedule.startTimeVisual;
+                const eventMeasure = Math.floor(it.startTick / measureTicks);
+                // Anti-skip: do not allow advancing beyond the current measure
+                if (eventMeasure > nowMeasure) {
+                    return;
+                }
+                // proceed with grading
                 const eventTime = startSec + it.startTick * schedule.secondsPerTick;
                 const delta = now - eventTime; // + late, - early
+                const isFirstInMeasure = (it.startTick % measureTicks) === 0;
+                const tolSec = (baseTolMs + (isFirstInMeasure ? firstBonusMs : 0)) / 1000;
+                const badWindowSec = ((baseTolMs * maxWindowFactor) + (isFirstInMeasure ? firstBonusMs : 0)) / 1000;
 
                 let feedbackText = '';
-                if (Math.abs(delta) <= tol) {
+                if (Math.abs(delta) <= tolSec) {
                     // Good
                     it.state = 'good';
                     it.hitDeltaMs = Math.round(delta * 1000);
@@ -933,8 +1214,9 @@
                     feedbackText = `On time (${Math.abs(it.hitDeltaMs)}ms)`;
                     if (el.feedback) el.feedback.innerHTML = `<span class="good">${feedbackText}</span>`;
                     nextEventIdx = idx + 1;
-                } else {
-                    // Early/Late (bad for scoring but show by how much)
+                    lastHitAtSec = now;
+                } else if (Math.abs(delta) <= badWindowSec) {
+                    // Early/Late (bad) but still consume to progress
                     it.state = 'bad';
                     it.hitDeltaMs = Math.round(delta * 1000);
                     stats.misses += 1;
@@ -943,6 +1225,10 @@
                     feedbackText = `${dir} by ${Math.abs(it.hitDeltaMs)}ms`;
                     if (el.feedback) el.feedback.innerHTML = `<span class="warn">${feedbackText}</span>`;
                     nextEventIdx = idx + 1;
+                    lastHitAtSec = now;
+                } else {
+                    // Ignore far-off taps
+                    return;
                 }
                 updateStats();
                 drawSheet(now);
@@ -1060,6 +1346,20 @@
                 ctx.stroke();
             }
 
+            function drawHalfRest(x, staffY, lineSpacing, color) {
+                // Half rest sits on the middle line
+                const midLineY = staffY + lineSpacing * 2;
+                ctx.fillStyle = color;
+                ctx.fillRect(x - 6, midLineY - 4, 12, 4);
+            }
+
+            function drawWholeRest(x, staffY, lineSpacing, color) {
+                // Whole rest hangs from the line below the middle (4th from top)
+                const lineBelowMid = staffY + lineSpacing * 3;
+                ctx.fillStyle = color;
+                ctx.fillRect(x - 6, lineBelowMid, 12, 4);
+            }
+
             // Drawing
             function drawSheet(now) {
                 if (!pattern) { clearCanvas(); drawEmpty(); return; }
@@ -1069,47 +1369,33 @@
                 const rightPad = 12;
                 const topPad = 28;
                 const bottomPad = 36;
-                const usableWidth = canvasWidth - leftPad - rightPad;
-                const pxPerTick = usableWidth / pattern.totalTicks;
                 const lineSpacing = 16;
-                const staffY = topPad;
-                const midLineY = staffY + lineSpacing * 2; // middle line
-                const baselineY = canvasHeight - bottomPad;
-
-                // Staff lines (visual)
-                ctx.strokeStyle = 'rgba(255,255,255,0.14)';
-                ctx.lineWidth = 1;
-                for (let i = 0; i < 5; i++) {
-                    const y = staffY + i * lineSpacing;
-                    ctx.beginPath();
-                    ctx.moveTo(leftPad, y);
-                    ctx.lineTo(canvasWidth - rightPad, y);
-                    ctx.stroke();
-                }
-
-                // Time signature (simple numerals)
-                ctx.fillStyle = 'rgba(229,231,235,0.9)';
-                ctx.font = 'bold 24px Georgia, serif';
-                ctx.textAlign = 'right';
-                ctx.fillText(String(pattern.timeSig.beatsPerMeasure), leftPad - 10, staffY + lineSpacing * 1.5);
-                ctx.fillText(String(pattern.timeSig.beatNote), leftPad - 10, staffY + lineSpacing * 3.5);
-                ctx.textAlign = 'left';
-
-                // Measure bars only
                 const measureTicks = pattern.ticksPerBeat * pattern.timeSig.beatsPerMeasure;
-                const barXs = [];
-                for (let tick = 0; tick <= pattern.totalTicks; tick += measureTicks) {
-                    const x = leftPad + tick * pxPerTick;
-                    barXs.push(x);
-                    ctx.beginPath();
-                    ctx.moveTo(x, staffY - 8);
-                    ctx.lineTo(x, staffY + lineSpacing * 4 + 8);
-                    ctx.strokeStyle = 'rgba(255,255,255,0.5)';
-                    ctx.lineWidth = 1.5;
-                    ctx.stroke();
+                const measuresPerRow = getMeasuresPerRow();
+                const totalMeasures = Math.ceil(pattern.totalTicks / measureTicks);
+                const numRows = Math.max(1, Math.ceil(totalMeasures / measuresPerRow));
+                const usableWidth = canvasWidth - leftPad - rightPad;
+                const ticksPerRow = measuresPerRow * measureTicks;
+                const pxPerTickRow = usableWidth / ticksPerRow;
+                const staffHeight = lineSpacing * 4;
+                const rowStride = staffHeight + 60;
+
+                // Precompute row meta
+                const rows = [];
+                for (let r = 0; r < numRows; r++) {
+                    const rowStartMeasure = r * measuresPerRow;
+                    const rowMeasures = Math.min(measuresPerRow, totalMeasures - rowStartMeasure);
+                    const rowStartTick = rowStartMeasure * measureTicks;
+                    const staffY = topPad + r * rowStride;
+                    const midLineY = staffY + lineSpacing * 2;
+                    const rowBarXs = [];
+                    for (let m = 0; m <= rowMeasures; m++) {
+                        rowBarXs.push(leftPad + m * measureTicks * pxPerTickRow);
+                    }
+                    rows.push({ r, staffY, midLineY, rowStartTick, rowMeasures, rowBarXs });
                 }
 
-                function adjustAwayFromBar(x) {
+                function adjustAwayFromBar(x, barXs) {
                     let nearest = null;
                     let minD = Infinity;
                     for (const bx of barXs) {
@@ -1118,18 +1404,60 @@
                     }
                     const minDist = NOTEHEAD_RX + 3;
                     if (nearest != null && Math.abs(x - nearest) < minDist) {
-                        return nearest + minDist; // always push to right of bar
+                        const smallOffset = 4; // nudge notehead slightly right of barline for visibility
+                        return nearest + smallOffset;
                     }
                     return x;
                 }
 
-                // Build note layout
+                // Staff lines per row
+                ctx.strokeStyle = 'rgba(255,255,255,0.14)';
+                ctx.lineWidth = 1;
+                for (const row of rows) {
+                    for (let i = 0; i < 5; i++) {
+                        const y = row.staffY + i * lineSpacing;
+                        ctx.beginPath();
+                        ctx.moveTo(leftPad, y);
+                        ctx.lineTo(canvasWidth - rightPad, y);
+                        ctx.stroke();
+                    }
+                }
+
+                // Time signature only on first row
+                if (rows[0]) {
+                    const row0 = rows[0];
+                    ctx.fillStyle = 'rgba(229,231,235,0.9)';
+                    ctx.font = 'bold 24px ui-monospace, Menlo, Monaco, SFMono-Regular, Consolas, Liberation Mono, monospace';
+                    ctx.textAlign = 'right';
+                    ctx.fillText(String(pattern.timeSig.beatsPerMeasure), leftPad - 10, row0.staffY + lineSpacing * 1.5);
+                    ctx.fillText(String(pattern.timeSig.beatNote), leftPad - 10, row0.staffY + lineSpacing * 3.5);
+                    ctx.textAlign = 'left';
+                }
+
+                // Measure bars per row
+                for (const row of rows) {
+                    for (let m = 0; m <= row.rowMeasures; m++) {
+                        const x = leftPad + m * measureTicks * pxPerTickRow;
+                        ctx.beginPath();
+                        ctx.moveTo(x, row.staffY - 8);
+                        ctx.lineTo(x, row.staffY + lineSpacing * 4 + 8);
+                        ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+                        ctx.lineWidth = 1.5;
+                        ctx.stroke();
+                    }
+                }
+
+                // Build note layout with rows
                 const layouts = [];
                 for (let i = 0; i < pattern.items.length; i++) {
                     const it = pattern.items[i];
-                    const x = adjustAwayFromBar(leftPad + it.startTick * pxPerTick);
+                    const rowIdx = Math.floor(it.startTick / ticksPerRow);
+                    const row = rows[Math.min(rowIdx, rows.length - 1)];
+                    const ticksIntoRow = it.startTick - row.rowStartTick;
+                    let x = leftPad + ticksIntoRow * pxPerTickRow;
+                    x = adjustAwayFromBar(x, row.rowBarXs);
                     const beamCount = getBeamCount(it.durTicks, pattern.ticksPerBeat);
-                    layouts.push({ i, x, y: midLineY, it, beamCount, stemX: null, stemTopY: null, connectedLeft: {}, connectedRight: {} });
+                    layouts.push({ i, x, y: row.midLineY, it, beamCount, stemX: null, stemTopY: null, connectedLeft: {}, connectedRight: {}, row });
                 }
 
                 // Notes/rests (noteheads first)
@@ -1140,11 +1468,24 @@
                             : it.state === 'bad' ? 'rgba(245,158,11,1)'
                                 : 'rgba(229,231,235,1)';
                     if (it.isRest) {
-                        if (it.durTicks >= 4) drawQuarterRest(l.x, midLineY, color);
-                        else if (it.durTicks === 2 || it.durTicks === 3) {
-                            drawEighthRest(l.x, midLineY, color);
-                            if (it.isDotted) drawDot(l.x, midLineY, color);
-                        } else if (it.durTicks === 1) drawSixteenthRest(l.x, midLineY, color);
+                        const tpb = pattern.ticksPerBeat;
+                        if (it.durTicks >= tpb * 4) {
+                            drawWholeRest(l.x, l.row.staffY, lineSpacing, color);
+                            if (it.isDotted) drawDot(l.x, l.row.midLineY, color);
+                        } else if (it.durTicks >= tpb * 2) {
+                            drawHalfRest(l.x, l.row.staffY, lineSpacing, color);
+                            if (it.isDotted) drawDot(l.x, l.row.midLineY, color);
+                        } else if (it.durTicks >= tpb) {
+                            drawQuarterRest(l.x, l.row.midLineY, color);
+                            if (it.isDotted) drawDot(l.x, l.row.midLineY, color);
+                        } else if (it.durTicks >= Math.round(tpb / 2)) {
+                            drawEighthRest(l.x, l.row.midLineY, color);
+                            if (it.isDotted) drawDot(l.x, l.row.midLineY, color);
+                        } else {
+                            // Triplet or smaller → show as eighth rest
+                            drawEighthRest(l.x, l.row.midLineY, color);
+                            if (it.isDotted) drawDot(l.x, l.row.midLineY, color);
+                        }
                     } else {
                         const filled = it.durTicks < (pattern.ticksPerBeat * 2); // half and whole unfilled
                         drawNotehead(l.x, l.y, color, filled);
@@ -1155,6 +1496,8 @@
                 // Stems
                 for (const l of layouts) {
                     if (l.it.isRest) continue;
+                    const isWhole = l.it.durTicks >= (pattern.ticksPerBeat * 4);
+                    if (isWhole) continue; // whole notes have no stems
                     const color = l.it.state === 'good' ? 'rgba(34,197,94,1)'
                         : l.it.state === 'miss' ? 'rgba(239,68,68,1)'
                             : l.it.state === 'bad' ? 'rgba(245,158,11,1)'
@@ -1170,7 +1513,8 @@
                     ? pattern.ticksPerBeat * 3
                     : pattern.ticksPerBeat;
                 function sameBeamGroup(a, b) {
-                    return Math.floor(a.it.startTick / beamGroupTicks) === Math.floor(b.it.startTick / beamGroupTicks);
+                    // Same local beam group and same row
+                    return a.row === b.row && (Math.floor(a.it.startTick / beamGroupTicks) === Math.floor(b.it.startTick / beamGroupTicks));
                 }
                 for (let i = 0; i < layouts.length - 1; i++) {
                     const A = layouts[i], B = layouts[i + 1];
@@ -1201,13 +1545,17 @@
                 // Flags where no beam
                 for (const L of layouts) {
                     if (L.it.isRest) continue;
+                    const color = L.it.state === 'good' ? 'rgba(34,197,94,1)'
+                        : L.it.state === 'miss' ? 'rgba(239,68,68,1)'
+                            : L.it.state === 'bad' ? 'rgba(245,158,11,1)'
+                                : 'rgba(229,231,235,1)';
                     for (let b = 1; b <= L.beamCount; b++) {
                         const hasConn = L.connectedLeft[b] || L.connectedRight[b];
-                        if (!hasConn) drawFlagUp(L.stemX, L.stemTopY, b, 'rgba(229,231,235,1)');
+                        if (!hasConn) drawFlagUp(L.stemX, L.stemTopY, b, color);
                     }
                 }
 
-                // Triplet count markers (simple display of '3' above group)
+                // Triplet count markers (monospace '3' above group)
                 for (let i = 0; i < layouts.length;) {
                     const L = layouts[i];
                     if (!L.it.isTriplet) { i++; continue; }
@@ -1221,9 +1569,10 @@
                     if (group.length === 3) {
                         const x1 = group[0].x;
                         const x3 = group[2].x;
-                        const yTop = Math.min(group[0].stemTopY || staffY - 12, group[1].stemTopY || staffY - 12, group[2].stemTopY || staffY - 12) - 6;
+                        const fallbackY = (group[0].row ? group[0].row.staffY : (topPad)) - 12;
+                        const yTop = Math.min(group[0].stemTopY || fallbackY, group[1].stemTopY || fallbackY, group[2].stemTopY || fallbackY) - 6;
                         ctx.fillStyle = 'rgba(229,231,235,0.9)';
-                        ctx.font = '12px Georgia, serif';
+                        ctx.font = '12px ui-monospace, Menlo, Monaco, SFMono-Regular, Consolas, Liberation Mono, monospace';
                         ctx.textAlign = 'center';
                         ctx.fillText('3', (x1 + x3) / 2, yTop);
                         i = j;
@@ -1234,24 +1583,37 @@
 
                 // (Removed secondary debug note render)
 
-                // Playhead
+                // Playhead mapped to current row
                 if (isPlaying && now != null) {
                     const audioRunning = audioCtx && audioCtx.state === 'running';
                     const startSec = audioRunning ? schedule.startTimeAudio : schedule.startTimeVisual;
                     const t = now - startSec;
                     const progressTicks = clamp(t / schedule.secondsPerTick, 0, pattern.totalTicks);
-                    const x = leftPad + progressTicks * pxPerTick;
+                    const rowIdx = Math.floor(progressTicks / ticksPerRow);
+                    const row = rows[Math.min(Math.max(0, rowIdx), rows.length - 1)];
+                    const ticksIntoRow = progressTicks - row.rowStartTick;
+                    const x = leftPad + ticksIntoRow * pxPerTickRow;
                     ctx.strokeStyle = 'rgba(96,165,250,0.9)';
                     ctx.lineWidth = 2;
                     ctx.beginPath();
-                    ctx.moveTo(x, topPad - 12);
-                    ctx.lineTo(x, canvasHeight - bottomPad + 16);
+                    ctx.moveTo(x, row.staffY - 12);
+                    ctx.lineTo(x, row.staffY + lineSpacing * 4 + 16);
                     ctx.stroke();
+
+                    // Auto-scroll sheet to keep current row in view
+                    if (autoScrollRow !== row.r) {
+                        const wrap = el.canvasWrap || document.querySelector('.canvas-wrap');
+                        if (wrap) {
+                            const targetTop = Math.max(0, Math.floor(row.staffY - 24));
+                            wrap.scrollTo({ top: targetTop, behavior: 'smooth' });
+                            autoScrollRow = row.r;
+                        }
+                    }
                 }
 
-                // Bottom labels
+                // Bottom labels (monospace)
                 ctx.fillStyle = 'rgba(229,231,235,0.7)';
-                ctx.font = '12px system-ui, -apple-system, Segoe UI, Roboto, sans-serif';
+                ctx.font = '12px ui-monospace, Menlo, Monaco, SFMono-Regular, Consolas, Liberation Mono, monospace';
                 ctx.fillText(`${pattern.timeSig.beatsPerMeasure}/${pattern.timeSig.beatNote}`, leftPad, canvasHeight - 10);
                 const acc = calcAccuracy();
                 ctx.textAlign = 'right';
@@ -1301,60 +1663,106 @@
                 if (sumMiss) sumMiss.textContent = String(stats.misses);
                 if (sumCombo) sumCombo.textContent = String(maxCombo);
 
-                // Draw accuracy chart (simple line)
-                if (el.accuracyChart) {
-                    const c = el.accuracyChart;
-                    const cctx = c.getContext('2d');
-                    const rect = c.getBoundingClientRect();
-                    const width = Math.max(300, Math.floor(rect.width));
-                    const height = Math.max(120, Math.floor(rect.height));
-                    const dpr2 = Math.max(1, Math.floor(window.devicePixelRatio || 1));
-                    c.width = width * dpr2;
-                    c.height = height * dpr2;
-                    cctx.setTransform(dpr2, 0, 0, dpr2, 0, 0);
-                    cctx.clearRect(0, 0, width, height);
-
-                    // Axes
-                    cctx.strokeStyle = 'rgba(255,255,255,0.2)';
-                    cctx.lineWidth = 1;
-                    cctx.beginPath();
-                    cctx.moveTo(32, 12);
-                    cctx.lineTo(32, height - 24);
-                    cctx.lineTo(width - 12, height - 24);
-                    cctx.stroke();
-
-                    // Normalize samples
-                    const samples = accSamples.length ? accSamples : [{ t: 0, acc: 0 }];
-                    const tMax = samples[samples.length - 1].t || 1;
-                    const plotX = (t) => 32 + (width - 44) * (t / tMax);
-                    const plotY = (a) => 12 + (height - 36) * (1 - a);
-
-                    // Grid lines
-                    cctx.strokeStyle = 'rgba(255,255,255,0.08)';
-                    for (let i = 0; i <= 5; i++) {
-                        const a = i / 5;
-                        const y = plotY(a);
-                        cctx.beginPath();
-                        cctx.moveTo(32, y);
-                        cctx.lineTo(width - 12, y);
-                        cctx.stroke();
-                    }
-
-                    // Line
-                    cctx.strokeStyle = 'rgba(96,165,250,0.9)';
-                    cctx.lineWidth = 2;
-                    cctx.beginPath();
-                    samples.forEach((s, idx) => {
-                        const x = plotX(s.t);
-                        const y = plotY(s.acc);
-                        if (idx === 0) cctx.moveTo(x, y); else cctx.lineTo(x, y);
-                    });
-                    cctx.stroke();
-                }
-
+                // Show overlay before measuring for chart sizing
                 if (el.summaryOverlay) el.summaryOverlay.style.display = 'flex';
-                // Prevent background interaction while summary is shown
+                if (el.canvasWrap) { el.canvasWrap.scrollTop = 0; el.canvasWrap.style.overflowY = 'hidden'; }
                 document.body.style.overflow = 'hidden';
+
+                // Build timing offsets and render with uPlot
+                if (el.timingChart && window.uPlot) {
+                    const noteOffsets = pattern.items
+                        .filter(it => !it.isRest)
+                        .map((it, idx) => ({ idx: idx + 1, ms: (typeof it.hitDeltaMs === 'number') ? it.hitDeltaMs : null }));
+
+                    const xVals = noteOffsets.map(o => o.idx);
+                    const yVals = noteOffsets.map(o => (o.ms == null ? null : o.ms));
+
+                    const absVals = yVals.filter(v => v != null).map(v => Math.abs(v));
+                    const base = absVals.length ? Math.max(...absVals) : 60;
+                    const maxAbs = Math.min(300, Math.max(80, Math.ceil(base * 1.1)));
+                    const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#60a5fa';
+
+                    const container = el.timingChart;
+                    const rect = container.getBoundingClientRect();
+                    const width = Math.max(320, Math.floor(rect.width || window.innerWidth * 0.9));
+                    const height = Math.max(140, Math.floor(parseFloat(container.style.height) || 160));
+
+                    const makePlot = () => new uPlot({
+                        width,
+                        height,
+                        title: '',
+                        scales: {
+                            x: { time: false },
+                            y: {
+                                range: () => [-maxAbs, maxAbs]
+                            }
+                        },
+                        axes: [
+                            {
+                                grid: { show: true },
+                                stroke: 'rgba(255,255,255,0.5)',
+                                ticks: { show: false },
+                                values: () => []
+                            },
+                            {
+                                grid: { show: true },
+                                stroke: 'rgba(255,255,255,0.5)'
+                            }
+                        ],
+                        cursor: { drag: { x: false, y: false } },
+                        legend: { show: false },
+                        hooks: {
+                            draw: [u => {
+                                const ctx = u.ctx;
+                                const { top, left, width: bw, height: bh } = u.bbox;
+                                // Zero baseline
+                                const y0 = Math.round(u.valToPos(0, 'y', true)) + 0.5;
+                                ctx.save();
+                                ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+                                ctx.lineWidth = 1;
+                                ctx.beginPath();
+                                ctx.moveTo(left, y0);
+                                ctx.lineTo(left + bw, y0);
+                                ctx.stroke();
+                                // Vertical grid line for each note
+                                ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+                                ctx.lineWidth = 1;
+                                for (let i = 0; i < xVals.length; i++) {
+                                    const px = Math.round(u.valToPos(xVals[i], 'x', true)) + 0.5;
+                                    ctx.beginPath();
+                                    ctx.moveTo(px, top);
+                                    ctx.lineTo(px, top + bh);
+                                    ctx.stroke();
+                                }
+                                ctx.restore();
+                            }]
+                        },
+                        series: [
+                            {},
+                            {
+                                stroke: accent,
+                                width: 2,
+                                spanGaps: true,
+                                points: { show: false }
+                            }
+                        ]
+                    }, [xVals, yVals], container);
+
+                    // Destroy previous plot and resize handler if present
+                    if (timingPlot) { try { timingPlot.destroy(); } catch { } timingPlot = null; }
+                    if (timingResizeHandler) { window.removeEventListener('resize', timingResizeHandler); timingResizeHandler = null; }
+
+                    timingPlot = makePlot();
+
+                    // Responsive resize while overlay is visible
+                    timingResizeHandler = () => {
+                        if (!el.summaryOverlay || el.summaryOverlay.style.display === 'none' || !timingPlot) return;
+                        const r = container.getBoundingClientRect();
+                        const w = Math.max(320, Math.floor(r.width));
+                        timingPlot.setSize({ width: w, height });
+                    };
+                    window.addEventListener('resize', timingResizeHandler);
+                }
             }
 
             // Persistence
@@ -1371,11 +1779,19 @@
             function applySettings(data) {
                 if (!data) return;
                 if (data.bpm) el.bpm.value = clamp(Number(data.bpm), 30, 240);
-                if (data.measures) el.measures.value = clamp(Number(data.measures), 1, 16);
+                if (data.measures) {
+                    const allowedMeasures = [1, 4, 16, 32];
+                    const mv = Number(data.measures);
+                    el.measures.value = String(allowedMeasures.includes(mv) ? mv : 4);
+                }
                 if (data.timeSig) el.timeSig.value = data.timeSig;
                 if (data.difficulty) el.difficulty.value = data.difficulty;
                 if (typeof data.metronome === 'boolean') el.metronome.checked = data.metronome;
                 if (typeof data.countIn === 'boolean') el.countIn.checked = data.countIn;
+                // Sync custom UI controls if present
+                const bpmValNode = document.getElementById('bpmVal');
+                if (bpmValNode) bpmValNode.textContent = String(el.bpm.value);
+                if (window._syncPills) window._syncPills();
             }
 
             // Events
@@ -1392,16 +1808,116 @@
             });
 
             // Start overlay interactions
-            el.bigStart.addEventListener('click', () => { generatePattern(); startPlayback(); });
-            el.startOverlay.addEventListener('click', (e) => {
-                if (e.target === el.startOverlay) { generatePattern(); startPlayback(); }
-            });
+            function attemptStartFromOverlay(target) {
+                if (!el.startOverlay) return;
+                const inControls = target && target.closest && target.closest('.start-bar');
+                if (!inControls) { generatePattern(); resizeCanvas(); startPlayback(); }
+            }
+            if (el.startHint) {
+                el.startHint.addEventListener('click', (e) => { attemptStartFromOverlay(e.target); });
+            }
+            if (el.startOverlay) {
+                el.startOverlay.addEventListener('click', (e) => { attemptStartFromOverlay(e.target); });
+                el.startOverlay.addEventListener('touchstart', (e) => { attemptStartFromOverlay(e.target); }, { passive: true });
+            }
+
+            // Build pill selectors and BPM slider UI
+            (function initStartUI() {
+                const bpmValNode = document.getElementById('bpmVal');
+                if (bpmValNode) {
+                    bpmValNode.textContent = String(el.bpm.value);
+                    el.bpm.addEventListener('input', () => { bpmValNode.textContent = String(el.bpm.value); });
+                }
+
+                function makePills(container, values, getLabel, current, onSelect) {
+                    if (!container) return [];
+                    container.innerHTML = '';
+                    const pills = values.map(v => {
+                        const s = document.createElement('span');
+                        s.className = 'pill' + (String(v) === String(current) ? ' active' : '');
+                        s.textContent = getLabel(v);
+                        s.tabIndex = 0;
+                        s.addEventListener('click', () => onSelect(v, s));
+                        s.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelect(v, s); } });
+                        container.appendChild(s);
+                        return s;
+                    });
+                    return pills;
+                }
+
+                function syncActive(buttons, current, mapVal = (x) => x) {
+                    buttons.forEach(btn => {
+                        const val = btn.textContent;
+                        const isActive = String(mapVal(val)) === String(current);
+                        btn.classList.toggle('active', isActive);
+                    });
+                }
+
+                // Measures limited set
+                const measuresGroup = document.getElementById('measuresGroup');
+                let measureButtons = [];
+                if (measuresGroup) {
+                    const measureVals = [1, 4, 16, 32];
+                    measureButtons = makePills(measuresGroup, measureVals, v => String(v), el.measures.value, (v, btn) => {
+                        el.measures.value = String(v);
+                        measureButtons.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        saveSettings(getSettings());
+                    });
+                }
+
+                // Time signature from hidden select
+                const timeSigGroup = document.getElementById('timeSigGroup');
+                let timeSigButtons = [];
+                if (timeSigGroup && el.timeSig) {
+                    const tsVals = Array.from(el.timeSig.options).map(o => o.value);
+                    timeSigButtons = makePills(timeSigGroup, tsVals, v => v, el.timeSig.value, (v, btn) => {
+                        el.timeSig.value = v;
+                        timeSigButtons.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        saveSettings(getSettings());
+                    });
+                }
+
+                // Difficulty from hidden select
+                const difficultyGroup = document.getElementById('difficultyGroup');
+                let difficultyButtons = [];
+                if (difficultyGroup && el.difficulty) {
+                    const diffVals = Array.from(el.difficulty.options).map(o => o.value);
+                    function label(v) { return v.charAt(0).toUpperCase() + v.slice(1); }
+                    difficultyButtons = makePills(difficultyGroup, diffVals, label, el.difficulty.value, (v, btn) => {
+                        el.difficulty.value = v;
+                        difficultyButtons.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        saveSettings(getSettings());
+                    });
+                }
+
+                // Expose a sync for applySettings
+                window._syncPills = function () {
+                    if (measureButtons.length) {
+                        measureButtons.forEach((b) => b.classList.toggle('active', b.textContent === String(el.measures.value)));
+                    }
+                    if (timeSigButtons.length) {
+                        timeSigButtons.forEach((b) => b.classList.toggle('active', b.textContent === el.timeSig.value));
+                    }
+                    if (difficultyButtons.length) {
+                        difficultyButtons.forEach((b) => b.classList.toggle('active', b.textContent.toLowerCase() === el.difficulty.value));
+                    }
+                    const bv = document.getElementById('bpmVal');
+                    if (bv) bv.textContent = String(el.bpm.value);
+                };
+            })();
 
             // Summary actions
             // Retry: run same pattern again immediately
             el.summaryRetry.addEventListener('click', async () => {
+                // Cleanup chart & listeners before leaving summary
+                if (timingResizeHandler) { window.removeEventListener('resize', timingResizeHandler); timingResizeHandler = null; }
+                if (timingPlot) { try { timingPlot.destroy(); } catch { } timingPlot = null; }
                 if (el.summaryOverlay) el.summaryOverlay.style.display = 'none';
                 document.body.style.overflow = '';
+                if (el.canvasWrap) el.canvasWrap.style.overflowY = 'auto';
                 // Ensure overlays hidden
                 if (el.startOverlay) el.startOverlay.style.display = 'none';
                 // Do not regenerate; reuse current pattern
@@ -1410,16 +1926,20 @@
 
             // Continue: go back to Start/options panel
             el.summaryContinue.addEventListener('click', () => {
+                // Cleanup chart & listeners before leaving summary
+                if (timingResizeHandler) { window.removeEventListener('resize', timingResizeHandler); timingResizeHandler = null; }
+                if (timingPlot) { try { timingPlot.destroy(); } catch { } timingPlot = null; }
                 if (el.summaryOverlay) el.summaryOverlay.style.display = 'none';
                 if (el.startOverlay) el.startOverlay.style.display = 'flex';
                 document.body.style.overflow = '';
+                if (el.canvasWrap) { el.canvasWrap.scrollTop = 0; el.canvasWrap.style.overflowY = 'hidden'; }
             });
 
             // Auto-save on setting changes
             ['bpm', 'measures', 'timeSig', 'difficulty', 'metronome', 'countIn'].forEach(id => {
                 const node = el[id];
                 node.addEventListener('change', () => saveSettings(getSettings()));
-                if (node.type === 'number' || node.tagName === 'SELECT') {
+                if (node.type === 'number' || node.type === 'range' || node.tagName === 'SELECT') {
                     node.addEventListener('input', () => saveSettings(getSettings()));
                 }
             });
@@ -1463,10 +1983,12 @@
 
             // Init
             applySettings(loadSettings());
+            sizeCanvasWrap();
             resizeCanvas();
             generatePattern();
             // Show start overlay initially
             el.startOverlay.style.display = 'flex';
+            if (el.canvasWrap) { el.canvasWrap.scrollTop = 0; el.canvasWrap.style.overflowY = 'hidden'; }
         })();
     </script>
 </body>
