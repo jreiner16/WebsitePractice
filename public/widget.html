@@ -5,18 +5,46 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Rhythm Practice</title>
-    <meta name="theme-color" content="#0f172a" />
+    <meta name="theme-color" content="#f2f0ec" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap"
+        rel="stylesheet">
     <style>
         :root {
-            --bg: #0f172a;
-            --panel: #111827;
-            --panel-border: #1f2937;
-            --text: #e5e7eb;
-            --muted: #9ca3af;
-            --accent: #60a5fa;
-            --good: #22c55e;
-            --bad: #ef4444;
-            --warn: #f59e0b;
+            /* Harvard‑Westlake admin tokens */
+            --hw-black: #231f20;
+            --hw-red: #c8102e;
+            --hw-gold: #f0b323;
+            --hw-gray-900: #1f2937;
+            --hw-gray-800: #374151;
+            --hw-gray-700: #4b5563;
+            --hw-gray-600: #6b7280;
+            --hw-gray-500: #9ca3af;
+            --hw-gray-400: #cbd5e1;
+            --hw-gray-300: #e5e7eb;
+            --hw-gray-200: #edf0f3;
+            --hw-gray-100: #f4f6f8;
+            --hw-surface: #ffffff;
+            --hw-border: #e5e7eb;
+            --hw-radius: 8px;
+            --hw-radius-sm: 6px;
+            --hw-radius-xs: 4px;
+            --hw-shadow: 0 1px 3px rgba(0, 0, 0, .08);
+            --hw-focus-ring: 0 0 0 3px rgba(200, 16, 46, .18);
+
+            /* Local semantic aliases used by the widget */
+            --bg: #f2f0ec;
+            /* page */
+            --panel: var(--hw-surface);
+            /* surfaces/cards */
+            --panel-border: var(--hw-border);
+            --text: #000;
+            --muted: var(--hw-gray-600);
+            --accent: var(--hw-red);
+            --good: #198754;
+            --bad: #b42318;
+            --warn: #f6c343;
         }
 
         * {
@@ -27,11 +55,9 @@
         body {
             margin: 0;
             height: 100%;
-            background: radial-gradient(900px 520px at 20% 20%, #0b1220, #0f172a 60%),
-                radial-gradient(700px 420px at 80% 0%, #0b1324, transparent 60%),
-                radial-gradient(900px 520px at 80% 100%, #0a1326, transparent 60%);
+            background: var(--bg);
             color: var(--text);
-            font-family: ui-monospace, Menlo, Monaco, 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+            font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
             overflow: hidden;
         }
 
@@ -61,11 +87,12 @@
         }
 
         .card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 12px;
+            background: var(--panel);
+            border: 1px solid var(--panel-border);
+            border-radius: var(--hw-radius);
             padding: 16px;
             margin-bottom: 16px;
+            box-shadow: var(--hw-shadow);
         }
 
         .title {
@@ -96,7 +123,7 @@
         .control-label {
             display: block;
             font-size: 11px;
-            color: var(--muted);
+            color: var(--hw-gray-700);
             margin-bottom: 6px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -107,12 +134,13 @@
         input[type="text"],
         input[type="range"] {
             width: 100%;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 8px;
+            background: #fff;
+            border: 1px solid var(--hw-border);
+            border-radius: var(--hw-radius-sm);
             padding: 8px 10px;
-            color: var(--text);
+            color: #000;
             font-size: 14px;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
         }
 
         input[type="range"] {
@@ -124,7 +152,7 @@
         input:focus {
             outline: none;
             border-color: var(--accent);
-            box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2);
+            box-shadow: var(--hw-focus-ring);
         }
 
         .switch {
@@ -140,25 +168,27 @@
         }
 
         button {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.10);
-            border-radius: 8px;
+            background: var(--accent);
+            border: 1px solid transparent;
+            border-radius: var(--hw-radius-sm);
             padding: 8px 14px;
-            color: var(--text);
+            color: #fff;
             cursor: pointer;
             font-size: 14px;
-            transition: background 0.12s ease, border-color 0.12s ease, transform 0.05s ease;
+            font-weight: 600;
+            transition: filter 0.12s ease, transform 0.05s ease, box-shadow 0.12s ease;
         }
 
         button:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: var(--accent);
+            filter: brightness(.96);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
         }
 
         button.primary {
             background: var(--accent);
             border-color: var(--accent);
-            color: #0b1220;
+            color: #fff;
             font-weight: 600;
         }
 
@@ -186,7 +216,7 @@
 
         .pill+.pill::before {
             content: " / ";
-            color: rgba(255, 255, 255, 0.18);
+            color: rgba(0, 0, 0, 0.18);
             margin: 0 4px;
         }
 
@@ -219,7 +249,7 @@
             appearance: none;
             height: 8px;
             border-radius: 999px;
-            background: rgba(255, 255, 255, 0.08);
+            background: var(--hw-gray-200);
             outline: none;
         }
 
@@ -230,7 +260,7 @@
             height: 18px;
             border-radius: 50%;
             background: var(--accent);
-            border: 1px solid rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(0, 0, 0, 0.1);
             cursor: pointer;
         }
 
@@ -256,11 +286,12 @@
         }
 
         .stat {
-            background: rgba(0, 0, 0, 0.25);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 8px;
+            background: var(--panel);
+            border: 1px solid var(--panel-border);
+            border-radius: var(--hw-radius-sm);
             padding: 10px;
             text-align: center;
+            box-shadow: var(--hw-shadow);
         }
 
         .stat .label {
@@ -294,7 +325,7 @@
 
         .meter {
             height: 6px;
-            background: rgba(255, 255, 255, 0.08);
+            background: var(--hw-gray-200);
             border-radius: 4px;
             overflow: hidden;
         }
@@ -311,15 +342,15 @@
             border-radius: 10px;
             overflow-x: hidden;
             overflow-y: auto;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--panel-border);
+            background: #fff;
         }
 
         canvas {
             display: block;
             width: 100%;
             height: auto;
-            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.015));
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.01));
         }
 
         .start-overlay {
@@ -346,20 +377,20 @@
         .big-start {
             background: var(--accent);
             border: 1px solid var(--accent);
-            color: #0b1220;
+            color: #fff;
             font-weight: 700;
             font-size: 18px;
             letter-spacing: 0.3px;
             padding: 12px 22px;
-            border-radius: 10px;
+            border-radius: var(--hw-radius);
             cursor: pointer;
             transition: transform 0.05s ease, box-shadow 0.15s ease;
-            box-shadow: 0 8px 24px rgba(96, 165, 250, 0.35);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
         }
 
         .big-start:hover {
             transform: translateY(-1px);
-            box-shadow: 0 12px 28px rgba(96, 165, 250, 0.45);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16);
         }
 
         .hint {
@@ -415,14 +446,14 @@
             transform: translateY(-50%);
             width: 1px;
             height: 22px;
-            background: rgba(255, 255, 255, 0.16);
+            background: rgba(0, 0, 0, 0.10);
         }
 
         /* Center bar divider */
         .bar-sep {
             width: 1px;
             height: 24px;
-            background: rgba(255, 255, 255, 0.16);
+            background: rgba(0, 0, 0, 0.10);
             margin: 0 14px;
         }
 
@@ -474,11 +505,12 @@
         }
 
         .summary-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.10);
-            border-radius: 12px;
+            background: var(--panel);
+            border: 1px solid var(--panel-border);
+            border-radius: var(--hw-radius);
             padding: 16px;
             width: min(680px, 92%);
+            box-shadow: var(--hw-shadow);
         }
 
         .summary-grid {
@@ -489,11 +521,12 @@
         }
 
         .summary-stat {
-            background: rgba(0, 0, 0, 0.25);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 8px;
+            background: var(--panel);
+            border: 1px solid var(--panel-border);
+            border-radius: var(--hw-radius-sm);
             padding: 10px;
             text-align: center;
+            box-shadow: var(--hw-shadow);
         }
 
         .summary-actions {
@@ -701,8 +734,8 @@
                                             <span>Metronome</span>
                                         </label>
                                         <label class="switch" style="margin-left:10px;">
-                                            <input id="countIn" type="checkbox" checked />
-                                            <span>Count-in</span>
+                                            <input id="beatMarker" type="checkbox" checked />
+                                            <span>Beat marker</span>
                                         </label>
                                     </div>
                                 </div>
@@ -757,25 +790,31 @@
 
             const difficultyConfig = {
                 easy: {
-                    // Simpler: quarters only
-                    allowedDurTicks: [4],
-                    restChance: 0.18,
+                    restChance: 0.08,
                     toleranceMs: 180,
-                    firstBeatBonusMs: 80
+                    firstBeatBonusMs: 90,
+                    tripletChance: 0,
+                    syncopationChance: 0.05,
+                    avoidRepeatMax: 4,
+                    minNotesPerBeat: 1
                 },
                 medium: {
-                    // Previous easy
-                    allowedDurTicks: [4, 2], // quarter, eighth
                     restChance: 0.12,
                     toleranceMs: 120,
-                    firstBeatBonusMs: 60
+                    firstBeatBonusMs: 60,
+                    tripletChance: 0.25,
+                    syncopationChance: 0.12,
+                    avoidRepeatMax: 2,
+                    minNotesPerBeat: 1
                 },
                 hard: {
-                    // Slightly easier than before: drop sixteenths, keep dotted eighths
-                    allowedDurTicks: [4, 3, 2],
-                    restChance: 0.18,
-                    toleranceMs: 75,
-                    firstBeatBonusMs: 45
+                    restChance: 0.06,
+                    toleranceMs: 70,
+                    firstBeatBonusMs: 45,
+                    tripletChance: 0.45,
+                    syncopationChance: 0.2,
+                    avoidRepeatMax: 2,
+                    minNotesPerBeat: 0
                 }
             };
 
@@ -792,7 +831,7 @@
                 timeSig: document.getElementById('timeSig'),
                 difficulty: document.getElementById('difficulty'),
                 metronome: document.getElementById('metronome'),
-                countIn: document.getElementById('countIn'),
+                beatMarker: document.getElementById('beatMarker'),
                 btnGenerate: document.getElementById('generate'),
                 btnPlay: document.getElementById('play'),
                 btnStop: document.getElementById('stop'),
@@ -823,6 +862,27 @@
 
             // Canvas setup
             const ctx = el.sheet.getContext('2d');
+            // Admin palette for high-contrast staff/notes
+            const getCssVar = (name, fallback) => {
+                const v = getComputedStyle(document.documentElement).getPropertyValue(name);
+                return (v && v.trim()) || fallback;
+            };
+            const palette = {
+                note: getCssVar('--hw-black', '#231f20'),
+                staff: getCssVar('--hw-gray-600', '#6b7280'),
+                bar: getCssVar('--hw-gray-800', '#374151'),
+                text: '#000',
+                muted: getCssVar('--hw-gray-700', '#4b5563'),
+                playhead: getCssVar('--hw-red', '#c8102e'),
+                axis: getCssVar('--hw-gray-500', '#9ca3af'),
+                grid: getCssVar('--hw-gray-300', '#e5e7eb')
+            };
+            function colorForState(state) {
+                if (state === 'good') return 'rgba(34,197,94,1)';
+                if (state === 'miss') return 'rgba(239,68,68,1)';
+                if (state === 'bad') return 'rgba(245,158,11,1)';
+                return palette.note;
+            }
             let canvasWidth = 0, canvasHeight = 0, dpr = 1;
             function getMeasuresPerRow() {
                 // Determine number of measures per row responsively (1..4)
@@ -863,6 +923,8 @@
                 el.sheet.width = canvasWidth * dpr;
                 el.sheet.height = canvasHeight * dpr;
                 ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                // Force next draw to recenter auto-scroll after layout changes
+                autoScrollRow = -1;
                 drawSheet();
             }
             window.addEventListener('resize', resizeCanvas);
@@ -920,6 +982,9 @@
 
             // Pattern generation
             function generatePattern() {
+                // reset repetition tracking
+                generatePattern._prevDur = null;
+                generatePattern._repeatCount = 0;
                 const bpm = clamp(Number(el.bpm.value || 100), 30, 240);
                 const allowedMeasures = [1, 4, 16, 32];
                 let mInput = Number(el.measures.value || 4);
@@ -943,31 +1008,41 @@
                     eighth: Math.round(ticksPerBeat / 2),
                     tripletEighth: Math.round(ticksPerBeat / 3),
                     dottedQuarter: Math.round(ticksPerBeat * 1.5),
-                    dottedEighth: Math.round(ticksPerBeat * 0.75)
+                    dottedEighth: Math.round(ticksPerBeat * 0.75),
+                    sixteenth: Math.max(1, Math.round(TICKS_PER_QUARTER / 4))
                 };
 
                 const isSimpleMeter = (beatNote === 2 || beatNote === 4);
 
                 for (let m = 0; m < measures; m++) {
+                    // reset repetition tracking at each measure boundary to allow 4 quarters cleanly
+                    generatePattern._prevDur = null;
+                    generatePattern._repeatCount = 0;
                     let t = 0;
+                    let notesInBeat = 0;
                     while (t < measureTicks) {
                         const posInMeasure = m * measureTicks + t;
                         const inBeat = t % ticksPerBeat;
+                        if (inBeat === 0) notesInBeat = 0;
 
-                        if (el.difficulty.value === 'medium' && isSimpleMeter && inBeat === 0 && (measureTicks - t) >= ticksPerBeat && Math.random() < 0.45) {
+                        if (diff.tripletChance > 0 && isSimpleMeter && inBeat === 0 && (measureTicks - t) >= ticksPerBeat && Math.random() < diff.tripletChance) {
                             // Insert an eighth-note triplet group for this beat, sometimes with missing notes
-                            const tripletRestProb = 0.35;
+                            const tripletRestProb = Math.max(0.2, diff.restChance);
                             const restFlags = [0, 1, 2].map(() => Math.random() < tripletRestProb);
                             if (restFlags.every(v => v)) {
                                 // Ensure at least one note present
                                 const keepIdx = Math.floor(Math.random() * 3);
                                 restFlags[keepIdx] = false;
                             }
+                            let localNotes = 0;
                             for (let i = 0; i < 3; i++) {
                                 const isRest = !!restFlags[i];
                                 items.push({ startTick: m * measureTicks + t, durTicks: DUR.tripletEighth, isRest, state: 'pending', hitDeltaMs: null, isTriplet: true, isDotted: false });
                                 t += DUR.tripletEighth;
+                                if (!isRest) localNotes++;
                             }
+                            // Triplet spans the whole beat
+                            notesInBeat = localNotes;
                             continue;
                         }
 
@@ -976,10 +1051,10 @@
                         if (el.difficulty.value === 'easy') {
                             allowed = [DUR.whole, DUR.half, DUR.quarter, DUR.eighth];
                         } else if (el.difficulty.value === 'medium') {
-                            allowed = [DUR.quarter, DUR.eighth];
+                            allowed = [DUR.half, DUR.quarter, DUR.eighth];
                         } else {
                             // hard: allow dotted values as well
-                            allowed = [DUR.half, DUR.quarter, DUR.eighth, DUR.dottedQuarter, DUR.dottedEighth];
+                            allowed = [DUR.quarter, DUR.eighth, DUR.dottedQuarter, DUR.dottedEighth, DUR.half];
                         }
 
                         // Filter to fit remaining measure
@@ -989,17 +1064,66 @@
 
                         if (allowed.length === 0) allowed = [measureTicks - t];
 
-                        let dur = allowed[Math.floor(Math.random() * allowed.length)];
+                        // Optional syncopation on beat: rest then note inside the beat
+                        const remainingBeat = ticksPerBeat - inBeat;
+                        if (inBeat === 0 && diff.syncopationChance > 0 && Math.random() < diff.syncopationChance && allowed.includes(DUR.eighth) && remainingBeat >= DUR.eighth * 2) {
+                            // Off-beat: rest eighth, then note eighth
+                            items.push({ startTick: m * measureTicks + t, durTicks: DUR.eighth, isRest: true, state: 'pending', hitDeltaMs: null, isTriplet: false, isDotted: false });
+                            t += DUR.eighth;
+                            items.push({ startTick: m * measureTicks + t, durTicks: DUR.eighth, isRest: false, state: 'pending', hitDeltaMs: null, isTriplet: false, isDotted: false });
+                            t += DUR.eighth;
+                            notesInBeat += 1;
+                            continue;
+                        }
+
+                        // Weighted pick to keep 16ths occasional on medium, common on hard
+                        function pickDuration() {
+                            const pool = [];
+                            for (const d of allowed) {
+                                let w = 1;
+                                if (d === DUR.quarter) w = (el.difficulty.value === 'easy') ? 5 : 3;
+                                else if (d === DUR.eighth) w = 3;
+                                else if (d === DUR.sixteenth) w = (el.difficulty.value === 'medium') ? (isSimpleMeter ? 1 : 0) : (isSimpleMeter ? 2 : 0);
+                                else if (d === DUR.dottedQuarter || d === DUR.dottedEighth) w = (el.difficulty.value === 'hard') ? 2 : 1;
+                                else if (d === DUR.half) w = 2;
+                                // prevent zero weight
+                                if (w > 0) for (let i = 0; i < w; i++) pool.push(d);
+                            }
+                            return pool.length ? pool[Math.floor(Math.random() * pool.length)] : allowed[0];
+                        }
+
+                        let dur = pickDuration();
 
                         // Bias towards quarters on easy
                         if (el.difficulty.value === 'easy' && dur !== DUR.quarter && Math.random() < 0.85 && allowed.includes(DUR.quarter)) {
                             dur = DUR.quarter;
                         }
 
-                        const isRest = Math.random() < diff.restChance;
+                        // Reduce repetition: avoid too many identical durations back-to-back
+                        if (!generatePattern._prevDur) generatePattern._prevDur = null;
+                        if (generatePattern._repeatCount == null) generatePattern._repeatCount = 0;
+                        if (generatePattern._prevDur === dur) {
+                            generatePattern._repeatCount += 1;
+                            if (generatePattern._repeatCount >= (diff.avoidRepeatMax || 3)) {
+                                const others = allowed.filter(d => d !== dur);
+                                if (others.length) dur = others[Math.floor(Math.random() * others.length)];
+                                generatePattern._repeatCount = 0;
+                            }
+                        } else {
+                            generatePattern._repeatCount = 0;
+                        }
+                        generatePattern._prevDur = dur;
+
+                        // Enforce at least one note per beat on easier difficulties
+                        let isRest = Math.random() < diff.restChance;
+                        if (diff.minNotesPerBeat > 0 && isRest && (inBeat + dur === ticksPerBeat) && notesInBeat === 0) {
+                            // This would end the beat with zero notes → force a note
+                            isRest = false;
+                        }
                         const isDotted = (dur === DUR.dottedQuarter) || (dur === DUR.dottedEighth);
                         items.push({ startTick: m * measureTicks + t, durTicks: dur, isRest, state: 'pending', hitDeltaMs: null, isTriplet: false, isDotted });
                         t += dur;
+                        if (!isRest) notesInBeat += 1;
                     }
                 }
 
@@ -1020,7 +1144,7 @@
                 const secondsPerQuarter = 60 / bpm;
                 const secondsPerTick = secondsPerQuarter / TICKS_PER_QUARTER;
 
-                const countInBeats = el.countIn.checked ? pattern.timeSig.beatsPerMeasure : 0;
+                const countInBeats = pattern.timeSig.beatsPerMeasure;
                 const events = pattern.items.map(it => it.startTick * secondsPerTick);
                 const durationSeconds = pattern.totalTicks * secondsPerTick;
                 schedule = { startTimeAudio: 0, startTimeVisual: 0, events, endTimeAudio: 0, endTimeVisual: 0, countInBeats, secondsPerTick, secondsPerQuarter };
@@ -1037,7 +1161,7 @@
                 const secondsPerBeat = schedule.secondsPerQuarter * (4 / pattern.timeSig.beatNote);
                 const baseTimeAudio = nowAudio + 0.15;
                 const baseTimeVisual = nowVisual + 0.15;
-                const countInBeats = el.countIn.checked ? beatsPerMeasure : 0;
+                const countInBeats = beatsPerMeasure;
                 schedule.startTimeAudio = baseTimeAudio + countInBeats * secondsPerBeat;
                 schedule.endTimeAudio = schedule.startTimeAudio + (pattern.totalTicks * schedule.secondsPerTick);
                 schedule.startTimeVisual = baseTimeVisual + countInBeats * secondsPerBeat;
@@ -1059,39 +1183,35 @@
                 // Clear any prior scheduled clicks before scheduling new ones
                 stopAllScheduledMetronome(nowAudio);
 
-                // Schedule metronome
-                if (el.metronome.checked) {
-                    // Count-in clicks + visual
-                    let t = baseTimeAudio;
-                    if (el.countIn.checked) {
-                        if (el.countInOverlay) {
-                            el.countInOverlay.style.display = 'flex';
-                        }
-                        for (let b = 0; b < beatsPerMeasure; b++) {
-                            clickAt(t, b === 0);
-                            if (el.countInNumber) {
-                                // Update number shortly before the click
-                                const displayAt = t - 0.01;
-                                setTimeout(() => {
-                                    el.countInNumber.textContent = String(beatsPerMeasure - b);
-                                }, Math.max(0, (displayAt - audioCtx.currentTime) * 1000));
-                            }
-                            t += secondsPerBeat;
-                        }
-                        // Hide number at start
+                // Count-in clicks + visual (always on)
+                let t = baseTimeAudio;
+                if (el.countInOverlay) {
+                    el.countInOverlay.style.display = 'flex';
+                }
+                for (let b = 0; b < beatsPerMeasure; b++) {
+                    clickAt(t, b === 0);
+                    if (el.countInNumber) {
+                        // Update number shortly before the click
+                        const displayAt = t - 0.01;
                         setTimeout(() => {
-                            if (el.countInOverlay) el.countInOverlay.style.display = 'none';
-                            if (el.countInNumber) el.countInNumber.textContent = '';
-                        }, Math.max(0, (schedule.startTimeAudio - audioCtx.currentTime) * 1000));
+                            el.countInNumber.textContent = String(beatsPerMeasure - b);
+                        }, Math.max(0, (displayAt - audioCtx.currentTime) * 1000));
                     }
-                    // Measure + beats over entire piece
-                    let totalBeats = Math.round(pattern.totalTicks / pattern.ticksPerBeat);
-                    t = schedule.startTimeAudio;
-                    for (let b = 0; b <= totalBeats + 1; b++) {
-                        clickAt(t, (b % beatsPerMeasure) === 0);
-                        t += secondsPerBeat;
-                        if (t > schedule.endTimeAudio + 0.5) break;
-                    }
+                    t += secondsPerBeat;
+                }
+                // Hide number at start
+                setTimeout(() => {
+                    if (el.countInOverlay) el.countInOverlay.style.display = 'none';
+                    if (el.countInNumber) el.countInNumber.textContent = '';
+                }, Math.max(0, (schedule.startTimeAudio - audioCtx.currentTime) * 1000));
+
+                // Measure + beats over entire piece (metronome sound gated inside clickAt)
+                let totalBeats = Math.round(pattern.totalTicks / pattern.ticksPerBeat);
+                t = schedule.startTimeAudio;
+                for (let b = 0; b <= totalBeats + 1; b++) {
+                    clickAt(t, (b % beatsPerMeasure) === 0);
+                    t += secondsPerBeat;
+                    if (t > schedule.endTimeAudio + 0.5) break;
                 }
 
                 isPlaying = true;
@@ -1192,12 +1312,23 @@
                 if (idx >= pattern.items.length) return;
                 const it = pattern.items[idx];
                 const eventMeasure = Math.floor(it.startTick / measureTicks);
-                // Anti-skip: do not allow advancing beyond the current measure
+                const eventTime = startSec + it.startTick * schedule.secondsPerTick;
+                // Anti-skip: do not allow advancing beyond the current measure,
+                // except allow slightly-early hits for the FIRST note of the next measure
                 if (eventMeasure > nowMeasure) {
-                    return;
+                    const isFirstInMeasure = (it.startTick % measureTicks) === 0;
+                    if (isFirstInMeasure) {
+                        const earlyAllowanceSec = (baseTolMs + firstBonusMs + 100) / 1000; // extra leniency for first beat
+                        if (now >= eventTime - earlyAllowanceSec) {
+                            // proceed to grading below
+                        } else {
+                            return;
+                        }
+                    } else {
+                        return;
+                    }
                 }
                 // proceed with grading
-                const eventTime = startSec + it.startTick * schedule.secondsPerTick;
                 const delta = now - eventTime; // + late, - early
                 const isFirstInMeasure = (it.startTick % measureTicks) === 0;
                 const tolSec = (baseTolMs + (isFirstInMeasure ? firstBonusMs : 0)) / 1000;
@@ -1242,9 +1373,12 @@
             const BEAM_GAP = 3;
 
             function getBeamCount(durTicks, ticksPerBeat) {
-                if (durTicks >= ticksPerBeat) return 0; // quarter or longer
-                // We only use eighths and triplet-eighths → 1 beam
-                return 1;
+                if (durTicks >= ticksPerBeat) return 0; // quarter-or-beat length or longer
+                const eighth = Math.round(ticksPerBeat / 2);
+                const tripletEighth = Math.round(ticksPerBeat / 3);
+                if (durTicks >= eighth) return 1;
+                if (durTicks >= tripletEighth) return 1; // keep 1 beam for triplet eighths
+                return 2; // would be sixteenth or smaller (not used now)
             }
 
             function drawNotehead(x, y, color, filled) {
@@ -1411,7 +1545,7 @@
                 }
 
                 // Staff lines per row
-                ctx.strokeStyle = 'rgba(255,255,255,0.14)';
+                ctx.strokeStyle = palette.staff;
                 ctx.lineWidth = 1;
                 for (const row of rows) {
                     for (let i = 0; i < 5; i++) {
@@ -1426,8 +1560,8 @@
                 // Time signature only on first row
                 if (rows[0]) {
                     const row0 = rows[0];
-                    ctx.fillStyle = 'rgba(229,231,235,0.9)';
-                    ctx.font = 'bold 24px ui-monospace, Menlo, Monaco, SFMono-Regular, Consolas, Liberation Mono, monospace';
+                    ctx.fillStyle = palette.text;
+                    ctx.font = 'bold 24px "Source Sans Pro", -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, Liberation Sans, sans-serif';
                     ctx.textAlign = 'right';
                     ctx.fillText(String(pattern.timeSig.beatsPerMeasure), leftPad - 10, row0.staffY + lineSpacing * 1.5);
                     ctx.fillText(String(pattern.timeSig.beatNote), leftPad - 10, row0.staffY + lineSpacing * 3.5);
@@ -1441,7 +1575,7 @@
                         ctx.beginPath();
                         ctx.moveTo(x, row.staffY - 8);
                         ctx.lineTo(x, row.staffY + lineSpacing * 4 + 8);
-                        ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+                        ctx.strokeStyle = palette.bar;
                         ctx.lineWidth = 1.5;
                         ctx.stroke();
                     }
@@ -1466,7 +1600,7 @@
                     const color = it.state === 'good' ? 'rgba(34,197,94,1)'
                         : it.state === 'miss' ? 'rgba(239,68,68,1)'
                             : it.state === 'bad' ? 'rgba(245,158,11,1)'
-                                : 'rgba(229,231,235,1)';
+                                : palette.note;
                     if (it.isRest) {
                         const tpb = pattern.ticksPerBeat;
                         if (it.durTicks >= tpb * 4) {
@@ -1501,7 +1635,7 @@
                     const color = l.it.state === 'good' ? 'rgba(34,197,94,1)'
                         : l.it.state === 'miss' ? 'rgba(239,68,68,1)'
                             : l.it.state === 'bad' ? 'rgba(245,158,11,1)'
-                                : 'rgba(229,231,235,1)';
+                                : palette.note;
                     const stem = drawStemUp(l.x, l.y, color);
                     l.stemX = stem.stemX;
                     l.stemTopY = stem.stemTopY;
@@ -1527,14 +1661,17 @@
                     }
                 }
 
-                // Draw beams
+                // Draw beams with state-aware color (prefer error > good > default)
                 for (let i = 0; i < layouts.length - 1; i++) {
                     const A = layouts[i], B = layouts[i + 1];
                     if (A.it.isRest || B.it.isRest) continue;
                     if (!sameBeamGroup(A, B)) continue;
                     const minBeams = Math.min(A.beamCount, B.beamCount);
                     if (minBeams <= 0) continue;
-                    const color = 'rgba(229,231,235,1)';
+                    const combinedState = (A.it.state === 'miss' || B.it.state === 'miss') ? 'miss'
+                        : (A.it.state === 'bad' || B.it.state === 'bad') ? 'bad'
+                            : (A.it.state === 'good' || B.it.state === 'good') ? 'good' : 'default';
+                    const color = colorForState(combinedState);
                     for (let b = 1; b <= minBeams; b++) {
                         const yA = A.stemTopY + (b - 1) * (BEAM_THICK + BEAM_GAP);
                         const yB = B.stemTopY + (b - 1) * (BEAM_THICK + BEAM_GAP);
@@ -1548,7 +1685,7 @@
                     const color = L.it.state === 'good' ? 'rgba(34,197,94,1)'
                         : L.it.state === 'miss' ? 'rgba(239,68,68,1)'
                             : L.it.state === 'bad' ? 'rgba(245,158,11,1)'
-                                : 'rgba(229,231,235,1)';
+                                : palette.note;
                     for (let b = 1; b <= L.beamCount; b++) {
                         const hasConn = L.connectedLeft[b] || L.connectedRight[b];
                         if (!hasConn) drawFlagUp(L.stemX, L.stemTopY, b, color);
@@ -1571,8 +1708,8 @@
                         const x3 = group[2].x;
                         const fallbackY = (group[0].row ? group[0].row.staffY : (topPad)) - 12;
                         const yTop = Math.min(group[0].stemTopY || fallbackY, group[1].stemTopY || fallbackY, group[2].stemTopY || fallbackY) - 6;
-                        ctx.fillStyle = 'rgba(229,231,235,0.9)';
-                        ctx.font = '12px ui-monospace, Menlo, Monaco, SFMono-Regular, Consolas, Liberation Mono, monospace';
+                        ctx.fillStyle = palette.text;
+                        ctx.font = '600 12px "Source Sans Pro", -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial';
                         ctx.textAlign = 'center';
                         ctx.fillText('3', (x1 + x3) / 2, yTop);
                         i = j;
@@ -1584,7 +1721,8 @@
                 // (Removed secondary debug note render)
 
                 // Playhead mapped to current row
-                if (isPlaying && now != null) {
+                const showBeat = !el.beatMarker || el.beatMarker.checked;
+                if (isPlaying && now != null && showBeat) {
                     const audioRunning = audioCtx && audioCtx.state === 'running';
                     const startSec = audioRunning ? schedule.startTimeAudio : schedule.startTimeVisual;
                     const t = now - startSec;
@@ -1593,18 +1731,20 @@
                     const row = rows[Math.min(Math.max(0, rowIdx), rows.length - 1)];
                     const ticksIntoRow = progressTicks - row.rowStartTick;
                     const x = leftPad + ticksIntoRow * pxPerTickRow;
-                    ctx.strokeStyle = 'rgba(96,165,250,0.9)';
+                    ctx.strokeStyle = palette.playhead;
                     ctx.lineWidth = 2;
                     ctx.beginPath();
                     ctx.moveTo(x, row.staffY - 12);
                     ctx.lineTo(x, row.staffY + lineSpacing * 4 + 16);
                     ctx.stroke();
 
-                    // Auto-scroll sheet to keep current row in view
+                    // Auto-scroll sheet to keep current row centered in view
                     if (autoScrollRow !== row.r) {
                         const wrap = el.canvasWrap || document.querySelector('.canvas-wrap');
                         if (wrap) {
-                            const targetTop = Math.max(0, Math.floor(row.staffY - 24));
+                            const viewH = Math.max(0, wrap.clientHeight || 0);
+                            const rowCenter = row.staffY + (rowStride / 2);
+                            const targetTop = clamp(Math.floor(rowCenter - viewH / 2), 0, Math.max(0, canvasHeight - viewH));
                             wrap.scrollTo({ top: targetTop, behavior: 'smooth' });
                             autoScrollRow = row.r;
                         }
@@ -1612,8 +1752,8 @@
                 }
 
                 // Bottom labels (monospace)
-                ctx.fillStyle = 'rgba(229,231,235,0.7)';
-                ctx.font = '12px ui-monospace, Menlo, Monaco, SFMono-Regular, Consolas, Liberation Mono, monospace';
+                ctx.fillStyle = palette.muted;
+                ctx.font = '12px "Source Sans Pro", -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial';
                 ctx.fillText(`${pattern.timeSig.beatsPerMeasure}/${pattern.timeSig.beatNote}`, leftPad, canvasHeight - 10);
                 const acc = calcAccuracy();
                 ctx.textAlign = 'right';
@@ -1626,8 +1766,8 @@
             }
 
             function drawEmpty() {
-                ctx.fillStyle = 'rgba(229,231,235,0.5)';
-                ctx.font = '14px system-ui, -apple-system, Segoe UI, Roboto, sans-serif';
+                ctx.fillStyle = palette.muted;
+                ctx.font = '14px "Source Sans Pro", -apple-system, Segoe UI, Roboto, sans-serif';
                 ctx.fillText('Press Start to begin a new session', 20, 40);
             }
 
@@ -1675,17 +1815,32 @@
                         .map((it, idx) => ({ idx: idx + 1, ms: (typeof it.hitDeltaMs === 'number') ? it.hitDeltaMs : null }));
 
                     const xVals = noteOffsets.map(o => o.idx);
-                    const yVals = noteOffsets.map(o => (o.ms == null ? null : o.ms));
+                    const yValsRaw = noteOffsets.map(o => (o.ms == null ? null : o.ms));
+                    // Smooth with a light moving average, keeping nulls as gaps
+                    function smooth(arr, radius) {
+                        const out = new Array(arr.length).fill(null);
+                        for (let i = 0; i < arr.length; i++) {
+                            if (arr[i] == null) { out[i] = null; continue; }
+                            let sum = 0, count = 0;
+                            for (let k = -radius; k <= radius; k++) {
+                                const j = i + k;
+                                if (j >= 0 && j < arr.length && arr[j] != null) { sum += arr[j]; count++; }
+                            }
+                            out[i] = count ? (sum / count) : arr[i];
+                        }
+                        return out;
+                    }
+                    const yVals = smooth(yValsRaw, 2);
 
                     const absVals = yVals.filter(v => v != null).map(v => Math.abs(v));
                     const base = absVals.length ? Math.max(...absVals) : 60;
-                    const maxAbs = Math.min(300, Math.max(80, Math.ceil(base * 1.1)));
+                    const maxAbs = Math.min(300, Math.max(100, Math.ceil(base * 1.1)));
                     const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#60a5fa';
 
                     const container = el.timingChart;
                     const rect = container.getBoundingClientRect();
                     const width = Math.max(320, Math.floor(rect.width || window.innerWidth * 0.9));
-                    const height = Math.max(140, Math.floor(parseFloat(container.style.height) || 160));
+                    const height = Math.max(160, Math.min(260, Math.floor(width > 520 ? 200 : 160)));
 
                     const makePlot = () => new uPlot({
                         width,
@@ -1700,13 +1855,14 @@
                         axes: [
                             {
                                 grid: { show: true },
-                                stroke: 'rgba(255,255,255,0.5)',
+                                stroke: palette.axis,
                                 ticks: { show: false },
                                 values: () => []
                             },
                             {
                                 grid: { show: true },
-                                stroke: 'rgba(255,255,255,0.5)'
+                                stroke: palette.axis,
+                                values: (u, vals) => vals.map(v => (v === 0 ? '0 ms' : `${v > 0 ? '+' : ''}${Math.round(v)} ms`))
                             }
                         ],
                         cursor: { drag: { x: false, y: false } },
@@ -1718,14 +1874,14 @@
                                 // Zero baseline
                                 const y0 = Math.round(u.valToPos(0, 'y', true)) + 0.5;
                                 ctx.save();
-                                ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+                                ctx.strokeStyle = palette.axis;
                                 ctx.lineWidth = 1;
                                 ctx.beginPath();
                                 ctx.moveTo(left, y0);
                                 ctx.lineTo(left + bw, y0);
                                 ctx.stroke();
                                 // Vertical grid line for each note
-                                ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+                                ctx.strokeStyle = palette.grid;
                                 ctx.lineWidth = 1;
                                 for (let i = 0; i < xVals.length; i++) {
                                     const px = Math.round(u.valToPos(xVals[i], 'x', true)) + 0.5;
@@ -1743,7 +1899,8 @@
                                 stroke: accent,
                                 width: 2,
                                 spanGaps: true,
-                                points: { show: false }
+                                points: { show: false },
+                                fill: 'rgba(200,16,46,0.08)'
                             }
                         ]
                     }, [xVals, yVals], container);
@@ -1773,7 +1930,7 @@
                     timeSig: el.timeSig.value,
                     difficulty: el.difficulty.value,
                     metronome: el.metronome.checked,
-                    countIn: el.countIn.checked
+                    beatMarker: el.beatMarker ? el.beatMarker.checked : true
                 };
             }
             function applySettings(data) {
@@ -1787,7 +1944,7 @@
                 if (data.timeSig) el.timeSig.value = data.timeSig;
                 if (data.difficulty) el.difficulty.value = data.difficulty;
                 if (typeof data.metronome === 'boolean') el.metronome.checked = data.metronome;
-                if (typeof data.countIn === 'boolean') el.countIn.checked = data.countIn;
+                if (typeof data.beatMarker === 'boolean' && el.beatMarker) el.beatMarker.checked = data.beatMarker;
                 // Sync custom UI controls if present
                 const bpmValNode = document.getElementById('bpmVal');
                 if (bpmValNode) bpmValNode.textContent = String(el.bpm.value);
@@ -1936,7 +2093,7 @@
             });
 
             // Auto-save on setting changes
-            ['bpm', 'measures', 'timeSig', 'difficulty', 'metronome', 'countIn'].forEach(id => {
+            ['bpm', 'measures', 'timeSig', 'difficulty', 'metronome', 'beatMarker'].forEach(id => {
                 const node = el[id];
                 node.addEventListener('change', () => saveSettings(getSettings()));
                 if (node.type === 'number' || node.type === 'range' || node.tagName === 'SELECT') {
